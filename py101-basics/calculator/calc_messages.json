@@ -1,6 +1,7 @@
 {
     "welcome": "Welcome to Calculator",
-    "invalid": "Not a valid input. Make sure input is a number!",
-    "operation": "What operation do you want to perform on these numbers. Here are your choices..",
-    "choices": "[Add](a) [Subtract](s) [Multiply](m) [Divide](d): "
+    "invalid_number": "Thats not a number. Make sure input is a number!",
+    "which_operation": "What operation do you want to perform on these numbers. Here are your choices..",
+    "choices": "[Add](a) [Subtract](s) [Multiply](m) [Divide](d): ",
+    "invalid_operation": "This is not a valid operation for numbers"
 }
