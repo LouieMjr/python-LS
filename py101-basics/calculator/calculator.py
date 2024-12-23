@@ -6,6 +6,10 @@
 
 
 from os import system
+import json
+
+with open('./calc_messages.json', 'r') as file:
+    messages = json.load(file)
 
 def get_number_from_user(called):
     first_or_second = 'First' if called == 1 else 'Second'
@@ -14,15 +18,22 @@ def get_number_from_user(called):
         return num
     except:
         system('clear')
-        print('Not a valid input. Make sure input is a number!')
+        print(messages['invalid'])
         return get_number_from_user(called)
+
+def get_operation_from_user():
+    print(messages['operation'])
+    operation = input(messages['choices'])
+    print(operation)
+
 
 
 def welcome_to_calculator():
-    print('Welcome to Calculator')
+    print(messages['welcome'])
     called = 1
-    print(get_number_from_user(called))
+    num1 = get_number_from_user(called)
     called += 1
-    print(get_number_from_user(called))
+    num2 = get_number_from_user(called)
+    operation = get_operation_from_user()
 
 welcome_to_calculator()
