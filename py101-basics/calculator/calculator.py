@@ -32,10 +32,10 @@ def valid_operation(operation):
 
     if operation in options:
         return operation
-    else:
-        system('clear')
-        print(messages['invalid_operation'])
-        return get_operation_from_user() 
+
+    system('clear')
+    print(messages['invalid_operation'])
+    return get_operation_from_user()
 
 def perform_operation_on_numbers(num1, num2, operation):
     system('clear')
@@ -47,12 +47,12 @@ def perform_operation_on_numbers(num1, num2, operation):
     }
 
     return f'{num1} {options[operation][0]} {num2} = {options[operation][1](num1, num2)}'
-    
+
 def clear_console_print_inputs(num1, num2 = None):
     system('clear')
     inputs = [num1, num2]
 
-    if inputs[1] == None:
+    if inputs[1] is None:
         print(f'You previously entered: {num1}')
     else:
         inputs[0] = str(inputs[0])
