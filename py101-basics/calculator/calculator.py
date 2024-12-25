@@ -16,7 +16,7 @@ def get_number_from_user(called):
     try:
         num = float(input(f'Enter the {first_or_second} number: '))
         return num
-    except:
+    except Exception:
         system('clear')
         print(messages['invalid_number'])
         return get_number_from_user(called)
@@ -62,17 +62,21 @@ def clear_console_print_inputs(num1, num2 = None):
 
 def restart_calculator(message):
     response = input(message).lower()
-    
-    if response == 'y' or response == 'yes':
+
+    restart = {'yes', 'y'}
+    end_calculator = {'no', 'n'}
+
+    if response in restart:
         return welcome_to_calculator()
-    elif response == 'n' or response == 'no':
+    if response in end_calculator:
         return messages['end_calculator']
-    else:
-        return restart_calculator(messages['invalid_restart'])
+
+    return restart_calculator(messages['invalid_restart'])
 
 
 def welcome_to_calculator(message = None):
-    print(message) if message is not None else system('clear')
+    message = message if message is not None else system('clear')
+    print(message)
 
     called = 1
     input_number1 = int(get_number_from_user(called))
@@ -83,7 +87,8 @@ def welcome_to_calculator(message = None):
     clear_console_print_inputs(input_number1, input_number2)
 
     user_choice = get_operation_from_user()
-    print(perform_operation_on_numbers(input_number1, input_number2, user_choice))
+    result = perform_operation_on_numbers(input_number1, input_number2, user_choice)
+    print(result)
     return restart_calculator(messages['restart'])
 
 print(welcome_to_calculator(messages['welcome']))
