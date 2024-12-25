@@ -60,8 +60,19 @@ def clear_console_print_inputs(num1, num2 = None):
         numbers = ' and '.join(inputs)
         print(f'You previously entered: {numbers}')
 
-def welcome_to_calculator():
-    print(messages['welcome'])
+def restart_calculator(message):
+    response = input(message).lower()
+    
+    if response == 'y' or response == 'yes':
+        return welcome_to_calculator()
+    elif response == 'n' or response == 'no':
+        return messages['end_calculator']
+    else:
+        return restart_calculator(messages['invalid_restart'])
+
+
+def welcome_to_calculator(message = None):
+    print(message) if message is not None else system('clear')
 
     called = 1
     input_number1 = int(get_number_from_user(called))
@@ -72,6 +83,7 @@ def welcome_to_calculator():
     clear_console_print_inputs(input_number1, input_number2)
 
     user_choice = get_operation_from_user()
-    return perform_operation_on_numbers(input_number1, input_number2, user_choice)
+    print(perform_operation_on_numbers(input_number1, input_number2, user_choice))
+    return restart_calculator(messages['restart'])
 
-print(welcome_to_calculator())
+print(welcome_to_calculator(messages['welcome']))

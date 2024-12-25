@@ -3,5 +3,8 @@
     "invalid_number": "Thats not a number. Make sure input is a number!",
     "which_operation": "What operation do you want to perform on these numbers. Here are your choices..",
     "choices": "[Add](a) [Subtract](s) [Multiply](m) [Divide](d): ",
-    "invalid_operation": "This is not a valid operation for numbers"
+    "invalid_operation": "This is not a valid operation for numbers",
+    "restart": "Would you like to use the Calculator again? ",
+    "end_calculator": "Thank you for using our Calculator! \nSee you again soon!",
+    "invalid_restart": "You're entry was invalid. Enter (yes) or (no): "
 }
