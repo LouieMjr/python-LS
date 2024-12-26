@@ -6,7 +6,7 @@
 
 
 from os import system
-import json, pdb
+import json
 
 with open('./calc_messages.json', 'r') as file:
     MESSAGES = json.load(file)
@@ -15,7 +15,6 @@ def get_number_from_user(called):
     first_or_second = 'First' if called == 1 else 'Second'
     try:
         num = float(input(f'Enter the {first_or_second} number: '))
-        # pdb.set_trace()
         return float_to_int_if_trailing_zero(num)
     except ValueError:
         system('clear')
@@ -55,10 +54,11 @@ def perform_operation_on_numbers(num1, num2, operation):
     return f'{num1} {operator} {num2} = {result}'
 
 def float_to_int_if_trailing_zero(number):
-    if type(number) == int: return number
+    if isinstance(number, int):
+        return number
 
     number = str(number)
-    return int(float(number)) if number[-1] == '0' else float(number) 
+    return int(float(number)) if number[-1] == '0' else float(number)
 
 def clear_console_print_inputs(num1, num2 = None):
     system('clear')
