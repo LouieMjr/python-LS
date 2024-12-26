@@ -9,32 +9,32 @@ from os import system
 import json
 
 with open('./calc_messages.json', 'r') as file:
-    messages = json.load(file)
+    MESSAGES = json.load(file)
 
 def get_number_from_user(called):
     first_or_second = 'First' if called == 1 else 'Second'
     try:
         num = float(input(f'Enter the {first_or_second} number: '))
         return num
-    except Exception:
+    except ValueError:
         system('clear')
-        print(messages['invalid_number'])
+        print(MESSAGES['invalid_number'])
         return get_number_from_user(called)
 
 def get_operation_from_user():
-    print(messages['which_operation'])
-    user_choice = input(messages['choices'])
+    print(MESSAGES['which_operation'])
+    user_choice = input(MESSAGES['choices'])
     return valid_operation(user_choice)
 
 def valid_operation(operation):
     options = ['a', 's', 'm', 'd']
-    operation = operation.lower()[0]
+    operation = operation[0].lower()
 
     if operation in options:
         return operation
 
     system('clear')
-    print(messages['invalid_operation'])
+    print(MESSAGES['invalid_operation'])
     return get_operation_from_user()
 
 def perform_operation_on_numbers(num1, num2, operation):
@@ -72,9 +72,9 @@ def restart_calculator(message):
     if response in restart:
         return welcome_to_calculator()
     if response in end_calculator:
-        return messages['end_calculator']
+        return MESSAGES['end_calculator']
 
-    return restart_calculator(messages['invalid_restart'])
+    return restart_calculator(MESSAGES['invalid_restart'])
 
 
 def welcome_to_calculator(message = None):
@@ -91,6 +91,6 @@ def welcome_to_calculator(message = None):
     user_choice = get_operation_from_user()
     result = perform_operation_on_numbers(number1, number2, user_choice)
     print(result)
-    return restart_calculator(messages['restart'])
+    return restart_calculator(MESSAGES['restart'])
 
-print(welcome_to_calculator(messages['welcome']))
+print(welcome_to_calculator(MESSAGES['welcome']))
