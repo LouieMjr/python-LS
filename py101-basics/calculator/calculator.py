@@ -6,7 +6,7 @@
 
 
 from os import system
-import json
+import json, pdb
 
 with open('./calc_messages.json', 'r') as file:
     MESSAGES = json.load(file)
@@ -15,7 +15,8 @@ def get_number_from_user(called):
     first_or_second = 'First' if called == 1 else 'Second'
     try:
         num = float(input(f'Enter the {first_or_second} number: '))
-        return num
+        # pdb.set_trace()
+        return float_to_int_if_trailing_zero(num)
     except ValueError:
         system('clear')
         print(MESSAGES['invalid_number'])
@@ -49,7 +50,15 @@ def perform_operation_on_numbers(num1, num2, operation):
     operator = options[operation][0]
     result = options[operation][1](num1, num2)
 
+    result = float_to_int_if_trailing_zero(result)
+
     return f'{num1} {operator} {num2} = {result}'
+
+def float_to_int_if_trailing_zero(number):
+    if type(number) == int: return number
+
+    number = str(number)
+    return int(float(number)) if number[-1] == '0' else float(number) 
 
 def clear_console_print_inputs(num1, num2 = None):
     system('clear')
@@ -81,11 +90,11 @@ def welcome_to_calculator(message = None):
     print(message) if message is not None else system('clear')
 
     called = 1
-    number1 = int(get_number_from_user(called))
+    number1 = get_number_from_user(called)
     clear_console_print_inputs(number1)
 
     called += 1
-    number2 = int(get_number_from_user(called))
+    number2 = get_number_from_user(called)
     clear_console_print_inputs(number1, number2)
 
     user_choice = get_operation_from_user()
