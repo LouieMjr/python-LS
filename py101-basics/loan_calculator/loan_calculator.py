@@ -27,18 +27,18 @@ def get_loan_amount(print_char):
 def get_annual_percentage_rate(print_char):
     print_char(MESSAGES['ask_for_APR'])
     try:
-        A_P_R = (float(input()) / 100)
+        apr = (float(input()) / 100)
     except (ValueError, UnboundLocalError):
         system('clear')
         print_char(MESSAGES['invalid_input'])
         return get_annual_percentage_rate(print_char)
-    return A_P_R
+    return apr
 
 def calculate_monthly_interest_rate(print_char):
-    A_P_R = get_annual_percentage_rate(print_char)
+    apr = get_annual_percentage_rate(print_char)
     system('clear')
-    monthly_interest_rate = (A_P_R / 12)
-    return [monthly_interest_rate, A_P_R]
+    monthly_interest_rate = (apr / 12)
+    return [monthly_interest_rate, apr]
 
 def get_loan_duration_years(print_char):
     print_char(MESSAGES['ask_for_loan_duration'])
@@ -66,7 +66,7 @@ def print_char_msg_with_delay(message):
 
 def calculate_monthly_payment(print_char):
     principle = get_loan_amount(print_char)
-    monthly_rate, A_P_R = calculate_monthly_interest_rate(print_char)
+    monthly_rate, apr = calculate_monthly_interest_rate(print_char)
     loan_term = convert_loan_term_to_months(print_char)
 
     monthly_payment = 0
@@ -77,7 +77,7 @@ def calculate_monthly_payment(print_char):
 
     monthly_payment = f'{monthly_payment:.2f}'
     system('clear')
-    display_loan_info([principle, A_P_R, monthly_rate, loan_term, monthly_payment])
+    display_loan_info([principle, apr, monthly_rate, loan_term, monthly_payment])
 
 def display_loan_info(loan_info_list):
     borrow_amount, annual_per, monthly_int, loan_duration, monthly_cost = loan_info_list
@@ -95,7 +95,7 @@ def display_loan_info(loan_info_list):
 def restart_calc(print_char):
     print_char(MESSAGES['restart_calc'])
     response = input().lower()
-    
+
     match response:
         case 'y'|'yes':
             system('clear')
