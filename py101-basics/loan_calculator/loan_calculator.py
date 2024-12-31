@@ -84,7 +84,7 @@ def display_loan_info(loan_info_list):
 
     borrow_amount_msg = f'{MESSAGES['borrow_amount']}{borrow_amount:,}.\n\n'
     annual_per_msg = f'{MESSAGES['APR']} {annual_per}%.\n'
-    monthly_int_msg = f'{MESSAGES['monthly_interest_rate']} {monthly_int:.4f}%.\n'
+    monthly_int_msg = f'{MESSAGES['monthly_int_rate']} {monthly_int:.4f}%.\n'
     loan_term_msg = f'{MESSAGES['loan_duration']} {loan_duration} months.\n\n'
     monthly_payment_msg = f'{MESSAGES['monthly_payment']}{monthly_cost}\n'
 
