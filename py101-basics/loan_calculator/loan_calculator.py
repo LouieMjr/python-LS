@@ -12,7 +12,12 @@ def get_loan_amount(print_char):
     print_char(MESSAGES['ask_for_loan_amount'])
     try:
         loan_amount = int(input())
-    except ValueError:
+        print(loan_amount, 'yer')
+        if loan_amount < 1:
+            system('clear')
+            print_char(MESSAGES['invalid_input'])
+            return get_loan_amount(print_char)
+    except (ValueError, UnboundLocalError):
         system('clear')
         print_char(MESSAGES['invalid_input'])
         return get_loan_amount(print_char)
@@ -23,7 +28,7 @@ def get_annual_percentage_rate(print_char):
     print_char(MESSAGES['ask_for_APR'])
     try:
         A_P_R = (float(input()) / 100)
-    except ValueError:
+    except (ValueError, UnboundLocalError):
         system('clear')
         print_char(MESSAGES['invalid_input'])
         return get_annual_percentage_rate(print_char)
@@ -39,7 +44,7 @@ def get_loan_duration_years(print_char):
     print_char(MESSAGES['ask_for_loan_duration'])
     try:
         loan_term = int(input())
-    except ValueError:
+    except (ValueError, UnboundLocalError):
         system('clear')
         print_char(MESSAGES['invalid_input'])
         return get_loan_duration_years(print_char)
@@ -89,12 +94,13 @@ def display_loan_info(loan_info_list):
 
 def restart_calc(print_char):
     print_char(MESSAGES['restart_calc'])
-    response = input()
-    match response[0].lower():
-        case 'y':
+    response = input().lower()
+    
+    match response:
+        case 'y'|'yes':
             system('clear')
             start_loan_calc(print_char, None)
-        case 'n':
+        case 'n'|'no':
             print_char(MESSAGES['goodbye'])
         case _:
             system('clear')
