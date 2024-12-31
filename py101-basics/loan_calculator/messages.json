@@ -2,5 +2,9 @@
     "welcome": "Welcome to our Loan Calculator!\nWe are going to see if borrowing money is the right move for you to make at this time.\nRemember were on your side.\nLets get into it!\n",
     "ask_for_loan_amount": "\nHow much would you like to borrow? ",
     "ask_for_APR": "\nWhat is your Annual Percentage Rate (APR)? ",
-    "ask_for_loan_duration": "\nHow many years is your Loan Term for? "
+    "ask_for_loan_duration": "How many years is your Loan Term for? ",
+    "borrow_amount": "You're borrowing $",
+    "APR": "Your Annual Percentage Rate is",
+    "monthly_interest_rate": "Your Monthy Interest Rate is",
+    "monthly_payment": "Your estimated Monthly Payment would be about $"
 }
