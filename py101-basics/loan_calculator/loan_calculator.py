@@ -75,15 +75,15 @@ def calculate_monthly_payment(print_char):
     display_loan_info([principle, A_P_R, monthly_rate, loan_term, monthly_payment])
 
 def display_loan_info(loan_info_list):
-    borrow_amount, annual_per, monthly_int_rate, loan_duration, monthly_cost = loan_info_list
+    borrow_amount, annual_per, monthly_int, loan_duration, monthly_cost = loan_info_list
 
     borrow_amount_msg = f'{MESSAGES['borrow_amount']}{borrow_amount:,}.\n\n'
-    annual_per_rate_msg = f'{MESSAGES['APR']} {annual_per}%.\n'
-    monthly_int_rate_msg = f'{MESSAGES['monthly_interest_rate']} {monthly_int_rate:.4f}%.\n'
-    loan_duration_msg = f'{MESSAGES['loan_duration']} {loan_duration} months.\n\n'
+    annual_per_msg = f'{MESSAGES['APR']} {annual_per}%.\n'
+    monthly_int_msg = f'{MESSAGES['monthly_interest_rate']} {monthly_int:.4f}%.\n'
+    loan_term_msg = f'{MESSAGES['loan_duration']} {loan_duration} months.\n\n'
     monthly_payment_msg = f'{MESSAGES['monthly_payment']}{monthly_cost}\n'
 
-    print_char_msg_with_delay(f'{borrow_amount_msg}{annual_per_rate_msg}{monthly_int_rate_msg}{loan_duration_msg}')
+    print_char_msg_with_delay(f'{borrow_amount_msg}{annual_per_msg}{monthly_int_msg}{loan_term_msg}')
     delay(0.8)
     print_char_msg_with_delay(f'{monthly_payment_msg}\n')
 
