@@ -8,14 +8,14 @@ def open_json():
 
 MESSAGES = open_json()
 
-def get_loan_amount_from_user(print_char):
+def get_loan_amount(print_char):
     print_char(MESSAGES['ask_for_loan_amount'])
     try:
         loan_amount = int(input())
     except ValueError:
         system('clear')
         print_char(MESSAGES['invalid_input'])
-        return get_loan_amount_from_user(print_char)
+        return get_loan_amount(print_char)
     system('clear')
     return loan_amount
 
@@ -60,7 +60,7 @@ def print_char_msg_with_delay(message):
         delay(0.02)
 
 def calculate_monthly_payment(print_char):
-    principle = get_loan_amount_from_user(print_char)
+    principle = get_loan_amount(print_char)
     monthly_rate, A_P_R = calculate_monthly_interest_rate(print_char)
     loan_term = convert_loan_term_to_months(print_char)
 
