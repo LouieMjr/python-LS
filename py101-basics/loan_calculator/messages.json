@@ -8,5 +8,8 @@
     "monthly_interest_rate": "Your Monthy Interest Rate is",
     "loan_duration": "You want to pay this loan off in",
     "monthly_payment": "After taking all of this into account,\nYour estimated Monthly Payment would be about $",
-    "invalid_input": "Please enter a number that is greater than 0"
+    "invalid_input": "Please enter a number that is greater than 0",
+    "restart_calc": "Would you like to make another Calculation? ",
+    "invalid_restart": "Please enter (yes, y) or (no, n)\n",
+    "goodbye": "Thanks for using our Loan Calculator! See you again soon!\n"
 }

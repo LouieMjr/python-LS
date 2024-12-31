@@ -22,18 +22,18 @@ def get_loan_amount_from_user(print_char):
 def get_annual_percentage_rate(print_char):
     print_char(MESSAGES['ask_for_APR'])
     try:
-        APR = (float(input()) / 100)
+        A_P_R = (float(input()) / 100)
     except ValueError:
         system('clear')
         print_char(MESSAGES['invalid_input'])
         return get_annual_percentage_rate(print_char)
-    return APR
+    return A_P_R
 
 def calculate_monthly_interest_rate(print_char):
-    APR = get_annual_percentage_rate(print_char)
+    A_P_R = get_annual_percentage_rate(print_char)
     system('clear')
-    monthly_interest_rate = (APR / 12)
-    return [monthly_interest_rate, APR]
+    monthly_interest_rate = (A_P_R / 12)
+    return [monthly_interest_rate, A_P_R]
 
 def get_loan_duration_years(print_char):
     print_char(MESSAGES['ask_for_loan_duration'])
@@ -54,24 +54,29 @@ def convert_loan_term_to_months(print_char):
 def delay(time):
     sleep(time)
 
-def print_char_horizontally(message):
+def print_char_msg_with_delay(message):
     for char in message:
         print(char, end='', flush=True)
         delay(0.02)
 
 def calculate_monthly_payment(print_char):
     principle = get_loan_amount_from_user(print_char)
-    monthly_rate, APR = calculate_monthly_interest_rate(print_char)
+    monthly_rate, A_P_R = calculate_monthly_interest_rate(print_char)
     loan_term = convert_loan_term_to_months(print_char)
 
-    monthly_payment = principle * (monthly_rate / (1 - (1 + monthly_rate) ** (-loan_term)))
+    monthly_payment = 0
+    if monthly_rate == 0:
+        monthly_payment = principle / loan_term
+    else:
+        monthly_payment = principle * (monthly_rate / (1 - (1 + monthly_rate) ** (-loan_term)))
+
     monthly_payment = f'{monthly_payment:.2f}'
 
     borrow_amount_msg = f'{MESSAGES['borrow_amount']}{principle:,}.\n\n'
-    annual_per_rate = f'{MESSAGES['APR']} {APR}%.\n'
-    monthly_int_rate = f'{MESSAGES['monthly_interest_rate']} {monthly_rate:.5f}%.\n'
+    annual_per_rate = f'{MESSAGES['APR']} {A_P_R}%.\n'
+    monthly_int_rate = f'{MESSAGES['monthly_interest_rate']} {monthly_rate:.4f}%.\n'
     loan_duration = f'{MESSAGES['loan_duration']} {loan_term} months.\n\n'
-    monthly_payment_msg = f'{MESSAGES['monthly_payment']}{monthly_payment}'
+    monthly_payment_msg = f'{MESSAGES['monthly_payment']}{monthly_payment}\n'
 
     system('clear')
 
@@ -79,9 +84,25 @@ def calculate_monthly_payment(print_char):
     delay(0.8)
     print_char(f'{monthly_payment_msg}\n')
 
-def start_loan_calc():
-    print_char_horizontally(MESSAGES['welcome'])
-    delay(0.8)
-    calculate_monthly_payment(print_char_horizontally)
+def restart_calc(print_char):
+    print_char(MESSAGES['restart_calc'])
+    response = input()
+    match response[0].lower():
+        case 'y':
+            system('clear')
+            start_loan_calc(print_char, None)
+        case 'n':
+            print_char(MESSAGES['goodbye'])
+        case _:
+            system('clear')
+            print_char(MESSAGES['invalid_restart'])
+            restart_calc(print_char)
 
-start_loan_calc()
+def start_loan_calc(print_char, message = MESSAGES['welcome']):
+    if message is not None:
+        print_char(message)
+        delay(0.8)
+    calculate_monthly_payment(print_char)
+    restart_calc(print_char)
+
+start_loan_calc(print_char_msg_with_delay)
