@@ -15,7 +15,7 @@ def get_user_choice(msg = 'Make your selection: Rock(r), Paper(p), Scissors(s): 
     user_choice = input()
 
     user_choice = valid_choice(user_choice)
-    while user_choice == False:
+    while user_choice is False:
         return get_user_choice('\nRock(r), Paper(p), Scissors(s): ')
 
     return user_choice
@@ -34,16 +34,16 @@ def valid_choice(user_pick):
             user_pick = choices[user_pick]
             print_with_typing_effect('You picked: ' + user_pick + '\n')
             return user_pick
-        else:
-            system('clear')
-            print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
-            return False
+
+        system('clear')
+        print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
+        return False
     except (IndexError, KeyError):
         system('clear')
         print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
         return False
 
-def computer_choice():
+def computer_selection():
     computer_pick = choice(['Rock', 'Paper', 'Scissors'])
     print_with_typing_effect(f'The computer chose {computer_pick}\n')
     return computer_pick
@@ -57,12 +57,12 @@ def rps_game_logic(player_choice, computer_choice):
 
     if player_choice == computer_choice:
         print_with_typing_effect(f'\nDraw! You both picked {player_choice}!\n')
-        return None
-    
+        return
+
     for combo in winning_combinations:
         if [player_choice, computer_choice] == combo:
             print_with_typing_effect(f'\nYou win!\n{player_choice} beats {computer_choice}!\n')
-            return None
+            return
     print_with_typing_effect(f'\nYou lose!\n{computer_choice} beats {player_choice}!\n')
 
 def play_rps():
@@ -74,7 +74,7 @@ def play_rps():
 
     print_with_typing_effect("Computer, picks next...\n")
     delay(1.4)
-    computer_pick = computer_choice()
+    computer_pick = computer_selection()
 
     rps_game_logic(user_pick, computer_pick)
 
