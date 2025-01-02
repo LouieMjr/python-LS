@@ -56,5 +56,19 @@ def valid_choice(user_pick):
         return False
 
 def computer_choice():
+    computer_pick = choice(['Rock', 'Paper', 'Scissors'])
+    print_with_typing_effect(f'The computer chose {computer_pick}\n')
+    return computer_pick
+
+def rps_game_logic(player_choice, computer_choice):
+    winning_combinations = [
+        ['Rock' , 'Scissors'],
+        ['Paper' , 'Rock'],
+        ['Scissors' , 'Paper']
+    ]
     
-computer_choice()
+    for combo in winning_combinations:
+        if [player_choice, computer_choice] == combo:
+            print_with_typing_effect(f'This is the winning combo {combo}\n')
+
+rps_game_logic('Rock', 'Scissors')
