@@ -1,13 +1,3 @@
-# winning scenarios
-
-# rock:
-# rock > scissor
-
-# paper:
-# paper > rock
-
-# scissors:
-# scissors > paper
 from time import sleep
 from os import system
 from random import choice
@@ -30,10 +20,7 @@ def get_user_choice(msg = 'Make your selection: Rock(r), Paper(p), Scissors(s): 
 
     return user_choice
 
-
 def valid_choice(user_pick):
-    user_pick = user_pick.upper()
-
     choices = {
         "R": "Rock",
         "P": "Paper",
@@ -41,7 +28,8 @@ def valid_choice(user_pick):
     }
 
     try:
-        if user_pick[0] in choices:
+        user_pick = user_pick[0].upper()
+        if user_pick in choices:
             system('clear')
             user_pick = choices[user_pick]
             print_with_typing_effect('You picked: ' + user_pick + '\n')
@@ -50,7 +38,7 @@ def valid_choice(user_pick):
             system('clear')
             print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
             return False
-    except IndexError:
+    except (IndexError, KeyError):
         system('clear')
         print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
         return False
@@ -66,9 +54,28 @@ def rps_game_logic(player_choice, computer_choice):
         ['Paper' , 'Rock'],
         ['Scissors' , 'Paper']
     ]
+
+    if player_choice == computer_choice:
+        print_with_typing_effect(f'\nDraw! You both picked {player_choice}!\n')
+        return None
     
     for combo in winning_combinations:
         if [player_choice, computer_choice] == combo:
-            print_with_typing_effect(f'This is the winning combo {combo}\n')
+            print_with_typing_effect(f'\nYou win!\n{player_choice} beats {computer_choice}!\n')
+            return None
+    print_with_typing_effect(f'\nYou lose!\n{computer_choice} beats {player_choice}!\n')
 
-rps_game_logic('Rock', 'Scissors')
+def play_rps():
+    print_with_typing_effect("Welcome to Rock, Paper, Scissors Shoot.\nThis is a fun game and can get extremely intense!\nHere is how we determine a winner:\n\n(Rock beats Scissors), (Paper beats Rock), (Scissors beats Paper).\n\nThose are the winning combinations!\nLet's get started!\n\n")
+
+    delay(0.5)
+    print_with_typing_effect("Player, you pick first...")
+    user_pick = get_user_choice()
+
+    print_with_typing_effect("Computer, picks next...\n")
+    delay(1.4)
+    computer_pick = computer_choice()
+
+    rps_game_logic(user_pick, computer_pick)
+
+play_rps()
