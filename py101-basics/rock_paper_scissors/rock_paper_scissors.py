@@ -1,6 +1,13 @@
 from time import sleep
 from os import system
 from random import choice
+import json
+
+def open_json():
+    with open('./rps_messages.json', 'r') as file:
+        return json.load(file)
+
+RPS_MSG = open_json()
 
 def delay(time):
     sleep(time)
@@ -10,13 +17,13 @@ def print_with_typing_effect(message):
         print(char, end='', flush=True)
         delay(0.02)
 
-def get_user_choice(msg = 'Make your selection: Rock(r), Paper(p), Scissors(s): '):
+def get_user_choice(msg = RPS_MSG['choices']):
     print_with_typing_effect(msg)
     user_choice = input()
 
     user_choice = valid_choice(user_choice)
     while user_choice is False:
-        return get_user_choice('\nRock(r), Paper(p), Scissors(s): ')
+        return get_user_choice(RPS_MSG['simplified_choices'])
 
     return user_choice
 
@@ -36,11 +43,11 @@ def valid_choice(user_pick):
             return user_pick
 
         system('clear')
-        print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
+        print_with_typing_effect(RPS_MSG['invalid'])
         return False
     except (IndexError, KeyError):
         system('clear')
-        print_with_typing_effect('This selection is not a valid one.\nPlease pick one of the choices we suggest!\n')
+        print_with_typing_effect(RPS_MSG['invalid'])
         return False
 
 def computer_selection():
@@ -56,17 +63,20 @@ def rps_game_logic(player_choice, computer_choice):
     ]
 
     if player_choice == computer_choice:
-        print_with_typing_effect(f'\nDraw! You both picked {player_choice}!\n')
+        draw = f'{RPS_MSG['draw']} {player_choice}!'
+        print_with_typing_effect(draw + '\n')
         return
 
     for combo in winning_combinations:
         if [player_choice, computer_choice] == combo:
-            print_with_typing_effect(f'\nYou win!\n{player_choice} beats {computer_choice}!\n')
+            win = f'{RPS_MSG['winner']}{player_choice} beats {computer_choice}!'
+            print_with_typing_effect(win + '\n')
             return
-    print_with_typing_effect(f'\nYou lose!\n{computer_choice} beats {player_choice}!\n')
+    lose = f'{RPS_MSG['loser']}{computer_choice} beats {player_choice}!'
+    print_with_typing_effect(lose + '\n')
 
 def play_rps():
-    print_with_typing_effect("Welcome to Rock, Paper, Scissors Shoot.\nThis is a fun game and can get extremely intense!\nHere is how we determine a winner:\n\n(Rock beats Scissors), (Paper beats Rock), (Scissors beats Paper).\n\nThose are the winning combinations!\nLet's get started!\n\n")
+    print_with_typing_effect(RPS_MSG['welcome'])
 
     delay(0.5)
     print_with_typing_effect("Player, you pick first...")

@@ -1,0 +1,10 @@
+{
+    "welcome": "Welcome to Rock, Paper, Scissors Shoot.\nThis is a fun game and can get extremely intense!\nHere is how we determine a winner:\n\n(Rock beats Scissors), (Paper beats Rock), (Scissors beats Paper).\n\nThose are the winning combinations.\nLet's get started!\n\n",
+    "draw": "\nDraw! You both picked",
+    "winner": "\nYou win!\n",
+    "loser": "\nYou lose!\n",
+    "invalid": "This selection is not a valid one.\nPlease pick one of the choices we suggest!\n",
+    "choices" : "Make your selection: Rock(r), Paper(p), Scissors(s): ",
+    "simplified_choices" : "\nRock(r), Paper(p), Scissors(s): "
+
+}
