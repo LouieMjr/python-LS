@@ -9,37 +9,31 @@ def open_json():
 
 RPS_MSG = open_json()
 
-def delay(time):
-    sleep(time)
+RPS_CHOICES = {
+    "R": "Rock",
+    "P": "Paper",
+    "SC": "Scissors",
+    "L": "Lizard",
+    "SP": "Spock"
+}
 
 def print_with_typing_effect(message):
     for char in message:
         print(char, end='', flush=True)
-        delay(0.02)
+        sleep(0.02)
 
-def get_user_choice(msg = RPS_MSG['choices']):
+def get_user_choice(msg = RPS_MSG['options']):
     print_with_typing_effect(msg)
     user_choice = input()
 
     user_choice = valid_choice(user_choice)
-    while user_choice is False:
-        return get_user_choice(RPS_MSG['simplified_choices'])
+    return user_choice if user_choice else get_user_choice(RPS_MSG['simplified_options'])
 
-    return user_choice
-
-def valid_choice(user_pick, choices =
-    {
-        "R": "Rock",
-        "P": "Paper",
-        "SC": "Scissors",
-        "L": "Lizard",
-        "SP": "Spock"
-    }):
-
+def valid_choice(user_pick, choices = RPS_CHOICES):
     try:
         user_pick = user_pick.upper()
         if 'SC' in user_pick or 'SP' in user_pick:
-            user_pick = user_pick[0:2]
+            user_pick = user_pick[:2]
         else:
             user_pick = user_pick[0]
 
@@ -59,7 +53,7 @@ def valid_choice(user_pick, choices =
         return False
 
 def computer_selection():
-    computer_pick = choice(['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'])
+    computer_pick = choice(list(RPS_CHOICES.values()))
     print_with_typing_effect(f'The computer chose {computer_pick}\n')
     return computer_pick
 
@@ -102,16 +96,10 @@ def rps_game_logic(player_choice, computer_choice):
     return score
 
 def restart_game(msg = RPS_MSG['restart_rps']):
-    delay(0.5)
+    sleep(0.5)
     print_with_typing_effect(msg)
     response = input()
-
-    options = {
-        "N": "No",
-        "Y": "Yes",
-    }
-
-    selection = valid_choice(response, options)
+    selection = valid_choice(response, {"N": "No", "Y": "Yes"})
 
     match selection:
         case 'Yes':
@@ -125,13 +113,8 @@ def best_of_five(msg = f'{RPS_MSG['best_of_five_msg']}{RPS_MSG['best_of_five_opt
 
     print_with_typing_effect(msg)
     response = input()
+    games_to_play = valid_choice(response, {"1": "1", "5": "5"})
 
-    options = {
-        "1": "1",
-        "5": "5"
-    }
-
-    games_to_play = valid_choice(response, options)
     if games_to_play is False:
         return best_of_five('\n' + RPS_MSG['best_of_five_options'])
 
@@ -153,12 +136,12 @@ def score_logic(user_score, comp_score):
     print_with_typing_effect(msg)
 
 def gameplay():
-    delay(0.5)
+    sleep(0.5)
     print_with_typing_effect("Player, you pick first...")
     user_pick = get_user_choice()
 
     print_with_typing_effect("Computer, picks next...\n")
-    delay(1.4)
+    sleep(1.4)
     computer_pick = computer_selection()
 
     return rps_game_logic(user_pick, computer_pick)
@@ -178,7 +161,7 @@ def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
         print_with_typing_effect(RPS_MSG['best_of_five_rules'])
         while (player_score < 3 and computer_score < 3):
             score = gameplay()
-            delay(0.6)
+            sleep(0.6)
 
             player_score += score['player']
             computer_score += score['computer']
