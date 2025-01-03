@@ -31,11 +31,18 @@ def valid_choice(user_pick, choices =
     {
         "R": "Rock",
         "P": "Paper",
-        "S": "Scissors"
+        "SC": "Scissors",
+        "L": "Lizard",
+        "SP": "Spock"
     }):
 
     try:
-        user_pick = user_pick[0].upper()
+        user_pick = user_pick.upper()
+        if 'SC' in user_pick or 'SP' in user_pick:
+            user_pick = user_pick[0:2]
+        else:
+            user_pick = user_pick[0]
+
         if user_pick in choices:
             system('clear')
             user_pick = choices[user_pick]
@@ -53,29 +60,38 @@ def valid_choice(user_pick, choices =
         return False
 
 def computer_selection():
-    computer_pick = choice(['Rock', 'Paper', 'Scissors'])
+    computer_pick = choice(['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'])
     print_with_typing_effect(f'The computer chose {computer_pick}\n')
     return computer_pick
 
 def rps_game_logic(player_choice, computer_choice):
-    winning_combinations = [
-        ['Rock' , 'Scissors'],
-        ['Paper' , 'Rock'],
-        ['Scissors' , 'Paper']
-    ]
+    winning_combos = {
+        ("Paper" , "Spock"): "Paper disproves Spock",
+        ("Paper" , "Rock"): "Paper covers Rock",
+        ("Rock" , "Lizard"): "Rock crushes Lizard",
+        ("Rock" , "Scissors"): "Rock crushes Scissors",
+        ("Scissors" , "Paper"): "Scissors cuts Paper",
+        ("Scissors" , "Lizard"): "Scissors decapitates Lizard",
+        ("Lizard" , "Paper"): "Lizard eats Paper",
+        ("Lizard" , "Spock"): "Lizard poisons Spock",
+        ("Spock", "Rock"): "Spock vaporizes Rock",
+        ("Spock", "Scissors"): "Spock smashes Scissors"
+    }
 
     if player_choice == computer_choice:
         draw = f'{RPS_MSG['draw']} {player_choice}!'
         print_with_typing_effect(draw + '\n')
         return
 
-    for combo in winning_combinations:
-        if [player_choice, computer_choice] == combo:
-            win = f'{RPS_MSG['winner']}{player_choice} beats {computer_choice}!'
-            print_with_typing_effect(win + '\n')
-            return
-    lose = f'{RPS_MSG['loser']}{computer_choice} beats {player_choice}!'
-    print_with_typing_effect(lose + '\n')
+    battle_msg = None
+    combo = (player_choice, computer_choice)
+    if combo in winning_combos:
+        battle_msg = f'{RPS_MSG['winner']}{winning_combos[combo]}!'
+    else:
+        combo = (computer_choice, player_choice)
+        battle_msg = f'{RPS_MSG['loser']}{winning_combos[combo]}!'
+
+    print_with_typing_effect(battle_msg)
 
 def restart_game(msg = RPS_MSG['restart_rps']):
     delay(0.5)
@@ -95,7 +111,7 @@ def restart_game(msg = RPS_MSG['restart_rps']):
         case 'No':
             print_with_typing_effect(RPS_MSG['thank_player'])
         case False:
-            return restart_game(RPS_MSG['restart_options'])
+            return restart_game(RPS_MSG['valid_restart_options'])
 
 def play_rps(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     print_with_typing_effect(msg)
