@@ -122,7 +122,7 @@ def restart_game(msg = RPS_MSG['restart_rps']):
             return restart_game(RPS_MSG['valid_restart_options'])
 
 def best_of_five(msg = f'{RPS_MSG['best_of_five_msg']}{RPS_MSG['best_of_five_options']}'):
-    
+
     print_with_typing_effect(msg)
     response = input()
 
@@ -169,7 +169,8 @@ def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     games_to_play = best_of_five()
 
     if games_to_play == 1:
-        print_with_typing_effect(f'Only {games_to_play} game!\nWinner takes all!\n\n')
+        msg = f'{games_to_play} game!\nWinner takes all!\n\n'
+        print_with_typing_effect(msg)
         gameplay()
     else:
         player_score = 0
