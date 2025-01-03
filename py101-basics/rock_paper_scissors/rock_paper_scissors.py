@@ -27,18 +27,20 @@ def get_user_choice(msg = RPS_MSG['choices']):
 
     return user_choice
 
-def valid_choice(user_pick):
-    choices = {
+def valid_choice(user_pick, choices = 
+    {
         "R": "Rock",
         "P": "Paper",
         "S": "Scissors"
-    }
-
+    }):
+    
     try:
         user_pick = user_pick[0].upper()
         if user_pick in choices:
             system('clear')
             user_pick = choices[user_pick]
+            if user_pick == 'Yes' or user_pick == 'No':
+                return user_pick
             print_with_typing_effect('You picked: ' + user_pick + '\n')
             return user_pick
 
@@ -75,8 +77,28 @@ def rps_game_logic(player_choice, computer_choice):
     lose = f'{RPS_MSG['loser']}{computer_choice} beats {player_choice}!'
     print_with_typing_effect(lose + '\n')
 
-def play_rps():
-    print_with_typing_effect(RPS_MSG['welcome'])
+def restart_game(msg = RPS_MSG['restart_rps']):
+    delay(0.5)
+    print_with_typing_effect(msg)
+    response = input()
+
+    options = {
+        "N": "No",
+        "Y": "Yes",
+    }
+
+    choice = valid_choice(response, options)
+
+    match choice:
+        case 'Yes':
+            return play_rps('Here we go!\n')
+        case 'No':
+            print_with_typing_effect(RPS_MSG['thank_player'])
+        case False:
+            return restart_game(RPS_MSG['restart_options'])
+
+def play_rps(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
+    print_with_typing_effect(msg)
 
     delay(0.5)
     print_with_typing_effect("Player, you pick first...")
@@ -87,5 +109,6 @@ def play_rps():
     computer_pick = computer_selection()
 
     rps_game_logic(user_pick, computer_pick)
+    restart_game()
 
 play_rps()
