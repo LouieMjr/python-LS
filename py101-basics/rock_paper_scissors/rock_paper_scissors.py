@@ -46,9 +46,8 @@ def valid_choice(user_pick, choices =
         if user_pick in choices:
             system('clear')
             user_pick = choices[user_pick]
-            if user_pick == 'Yes' or user_pick == 'No':
-                return user_pick
-            print_with_typing_effect('You picked: ' + user_pick + '\n')
+            if user_pick in ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock']:
+                print_with_typing_effect('You picked: ' + user_pick + '\n')
             return user_pick
 
         system('clear')
@@ -91,7 +90,7 @@ def rps_game_logic(player_choice, computer_choice):
         combo = (computer_choice, player_choice)
         battle_msg = f'{RPS_MSG['loser']}{winning_combos[combo]}!'
 
-    print_with_typing_effect(battle_msg)
+    print_with_typing_effect(battle_msg + '\n')
 
 def restart_game(msg = RPS_MSG['restart_rps']):
     delay(0.5)
@@ -107,15 +106,29 @@ def restart_game(msg = RPS_MSG['restart_rps']):
 
     match selection:
         case 'Yes':
-            return play_rps('Here we go!\n')
+            return start_game('Here we go!\n')
         case 'No':
             print_with_typing_effect(RPS_MSG['thank_player'])
         case False:
             return restart_game(RPS_MSG['valid_restart_options'])
 
-def play_rps(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
+def best_of_five(msg = f'{RPS_MSG['best_of_five_msg']}{RPS_MSG['best_of_five_options']}'):
+    
     print_with_typing_effect(msg)
+    response = input()
 
+    options = {
+        "1": "1",
+        "5": "5"
+    }
+
+    games_to_play = valid_choice(response, options)
+    if games_to_play is False:
+        return best_of_five('\n' + RPS_MSG['best_of_five_options'])
+
+    return int(games_to_play)
+
+def gameplay():
     delay(0.5)
     print_with_typing_effect("Player, you pick first...")
     user_pick = get_user_choice()
@@ -125,6 +138,22 @@ def play_rps(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     computer_pick = computer_selection()
 
     rps_game_logic(user_pick, computer_pick)
-    restart_game()
 
-play_rps()
+def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
+    print_with_typing_effect(msg)
+
+    games_to_play = best_of_five()
+    if games_to_play == 1:
+        print_with_typing_effect(f'Only {games_to_play} game!\nWinner takes all!\n\n')
+        games_to_play = 0
+        gameplay()
+        restart_game()
+
+    while games_to_play > 0:
+        gameplay()
+        if games_to_play == 1:
+            restart_game()
+
+        games_to_play -= 1
+
+start_game()

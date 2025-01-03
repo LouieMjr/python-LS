@@ -9,5 +9,8 @@
     "simplified_choices": "\nRock(r), Paper(p), Scissors(sc), Lizard(l), Spock(sp): ",
     "restart_rps": "\nWould you like to play again? ",
     "valid_restart_options": "\nYes(y) or No(n): ",
-    "thank_player": "Thank you for playing RPS! We hope you come back for more!\n"
+    "thank_player": "Thank you for playing RPS! We hope you come back for more!\n",
+    "best_of_five_msg": "Would you like to play a single game or the Best of 5 games?\n",
+    "best_of_five_options": "Enter (1) for a single match.\nEnter (5) for best of 5: ",
+    "best_of_five_rules": "First player to 3 victories wins in a best of 5!\n"
 }
