@@ -27,13 +27,13 @@ def get_user_choice(msg = RPS_MSG['choices']):
 
     return user_choice
 
-def valid_choice(user_pick, choices = 
+def valid_choice(user_pick, choices =
     {
         "R": "Rock",
         "P": "Paper",
         "S": "Scissors"
     }):
-    
+
     try:
         user_pick = user_pick[0].upper()
         if user_pick in choices:
@@ -87,9 +87,9 @@ def restart_game(msg = RPS_MSG['restart_rps']):
         "Y": "Yes",
     }
 
-    choice = valid_choice(response, options)
+    selection = valid_choice(response, options)
 
-    match choice:
+    match selection:
         case 'Yes':
             return play_rps('Here we go!\n')
         case 'No':
