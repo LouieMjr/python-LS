@@ -76,18 +76,18 @@ def computer_selection():
     print_with_typing_effect(f'The computer chose {computer_pick}\n')
     return computer_pick
 
-def rps_game_logic(player_choice, computer_choice, winning_combos, score):
+def decide_winner_update_score(user_pick, comp_pick, winning_combos, score):
 
     battle_msg = None
-    combo = (player_choice, computer_choice)
+    combo = (user_pick, comp_pick)
 
     if combo in winning_combos:
         score["player"] += 1
         battle_msg = f'{RPS_MSG['winner']}{winning_combos[combo]}!'
-    elif player_choice == computer_choice:
-        battle_msg = f'{RPS_MSG['draw']} {player_choice}!'
+    elif user_pick == comp_pick:
+        battle_msg = f'{RPS_MSG['draw']} {user_pick}!'
     else:
-        combo = (computer_choice, player_choice)
+        combo = (comp_pick, user_pick)
         score["computer"] += 1
         battle_msg = f'{RPS_MSG['loser']}{winning_combos[combo]}!'
 
@@ -119,7 +119,7 @@ def best_of_five(msg = MSG):
 
     return int(games_to_play)
 
-def score_logic(user_score, comp_score):
+def display_score_msg(user_score, comp_score):
     msg = None
     if user_score == comp_score:
         msg = f'The score is tied: {user_score} to {comp_score}\n\n'
@@ -137,13 +137,13 @@ def score_logic(user_score, comp_score):
 def gameplay():
     sleep(0.5)
     print_with_typing_effect("Player, you pick first...")
-    user_pick = get_user_choice()
+    user_choice = get_user_choice()
 
     print_with_typing_effect("Computer, picks next...\n")
     sleep(1.4)
-    computer_pick = computer_selection()
-
-    return rps_game_logic(user_pick, computer_pick, WINNING_COMBOS, SCORE)
+    computer_choice = computer_selection()
+    parameters = [user_choice, computer_choice, WINNING_COMBOS, SCORE]
+    return decide_winner_update_score(*parameters)
 
 def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     print_with_typing_effect(msg)
@@ -152,7 +152,8 @@ def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     if games_to_play == 1:
         msg = f'{games_to_play} game!\nWinner takes all!\n\n'
         print_with_typing_effect(msg)
-        gameplay()
+        _, battle_msg = gameplay()
+        print_with_typing_effect(battle_msg)
     else:
         print_with_typing_effect(RPS_MSG['best_of_five_rules'])
         player_score = 0
@@ -166,8 +167,10 @@ def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
 
             print_with_typing_effect(battle_msg)
             sleep(0.6)
-            score_logic(player_score, computer_score)
+            display_score_msg(player_score, computer_score)
 
+    SCORE["computer"] = 0
+    SCORE["player"] = 0
     restart_game()
 
 start_game()
