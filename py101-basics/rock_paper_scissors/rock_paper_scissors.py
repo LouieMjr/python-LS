@@ -17,6 +17,24 @@ RPS_CHOICES = {
     "SP": "Spock"
 }
 
+WINNING_COMBOS = {
+    ("Paper" , "Spock"): "Paper disproves Spock",
+    ("Paper" , "Rock"): "Paper covers Rock",
+    ("Rock" , "Lizard"): "Rock crushes Lizard",
+    ("Rock" , "Scissors"): "Rock crushes Scissors",
+    ("Scissors" , "Paper"): "Scissors cuts Paper",
+    ("Scissors" , "Lizard"): "Scissors decapitates Lizard",
+    ("Lizard" , "Paper"): "Lizard eats Paper",
+    ("Lizard" , "Spock"): "Lizard poisons Spock",
+    ("Spock", "Rock"): "Spock vaporizes Rock",
+    ("Spock", "Scissors"): "Spock smashes Scissors"
+}
+
+SCORE = {
+    "player": 0,
+    "computer": 0
+}
+
 def print_with_typing_effect(message):
     for char in message:
         print(char, end='', flush=True)
@@ -27,7 +45,8 @@ def get_user_choice(msg = RPS_MSG['options']):
     user_choice = input()
 
     user_choice = valid_choice(user_choice)
-    return user_choice if user_choice else get_user_choice(RPS_MSG['simplified_options'])
+    options = RPS_MSG['simplified_options']
+    return user_choice if user_choice else get_user_choice(options)
 
 def valid_choice(user_pick, choices = RPS_CHOICES):
     try:
@@ -57,29 +76,7 @@ def computer_selection():
     print_with_typing_effect(f'The computer chose {computer_pick}\n')
     return computer_pick
 
-def rps_game_logic(player_choice, computer_choice):
-    winning_combos = {
-        ("Paper" , "Spock"): "Paper disproves Spock",
-        ("Paper" , "Rock"): "Paper covers Rock",
-        ("Rock" , "Lizard"): "Rock crushes Lizard",
-        ("Rock" , "Scissors"): "Rock crushes Scissors",
-        ("Scissors" , "Paper"): "Scissors cuts Paper",
-        ("Scissors" , "Lizard"): "Scissors decapitates Lizard",
-        ("Lizard" , "Paper"): "Lizard eats Paper",
-        ("Lizard" , "Spock"): "Lizard poisons Spock",
-        ("Spock", "Rock"): "Spock vaporizes Rock",
-        ("Spock", "Scissors"): "Spock smashes Scissors"
-    }
-
-    score = {
-        "player": 0,
-        "computer": 0
-    }
-
-    if player_choice == computer_choice:
-        draw = f'{RPS_MSG['draw']} {player_choice}!'
-        print_with_typing_effect(draw + '\n')
-        return score
+def rps_game_logic(player_choice, computer_choice, winning_combos, score):
 
     battle_msg = None
     combo = (player_choice, computer_choice)
@@ -87,13 +84,14 @@ def rps_game_logic(player_choice, computer_choice):
     if combo in winning_combos:
         score["player"] += 1
         battle_msg = f'{RPS_MSG['winner']}{winning_combos[combo]}!'
+    elif player_choice == computer_choice:
+        battle_msg = f'{RPS_MSG['draw']} {player_choice}!'
     else:
         combo = (computer_choice, player_choice)
         score["computer"] += 1
         battle_msg = f'{RPS_MSG['loser']}{winning_combos[combo]}!'
 
-    print_with_typing_effect(battle_msg + '\n')
-    return score
+    return [score, battle_msg + '\n']
 
 def restart_game(msg = RPS_MSG['restart_rps']):
     sleep(0.5)
@@ -109,7 +107,8 @@ def restart_game(msg = RPS_MSG['restart_rps']):
         case False:
             return restart_game(RPS_MSG['valid_restart_options'])
 
-def best_of_five(msg = f'{RPS_MSG['best_of_five_msg']}{RPS_MSG['best_of_five_options']}'):
+MSG = f'{RPS_MSG['best_of_five_msg']}{RPS_MSG['best_of_five_options']}'
+def best_of_five(msg = MSG):
 
     print_with_typing_effect(msg)
     response = input()
@@ -144,11 +143,10 @@ def gameplay():
     sleep(1.4)
     computer_pick = computer_selection()
 
-    return rps_game_logic(user_pick, computer_pick)
+    return rps_game_logic(user_pick, computer_pick, WINNING_COMBOS, SCORE)
 
 def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
     print_with_typing_effect(msg)
-
     games_to_play = best_of_five()
 
     if games_to_play == 1:
@@ -156,16 +154,18 @@ def start_game(msg = f'{RPS_MSG['welcome']}{RPS_MSG['rules']}'):
         print_with_typing_effect(msg)
         gameplay()
     else:
+        print_with_typing_effect(RPS_MSG['best_of_five_rules'])
         player_score = 0
         computer_score = 0
-        print_with_typing_effect(RPS_MSG['best_of_five_rules'])
+
         while (player_score < 3 and computer_score < 3):
-            score = gameplay()
+            score, battle_msg = gameplay()
+
+            player_score = score['player']
+            computer_score = score['computer']
+
+            print_with_typing_effect(battle_msg)
             sleep(0.6)
-
-            player_score += score['player']
-            computer_score += score['computer']
-
             score_logic(player_score, computer_score)
 
     restart_game()
