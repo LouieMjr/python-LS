@@ -382,9 +382,97 @@ print(sort_by_consonant_count(my_list))
 
 
 
+'''
+/* Alphabet Symmetry Consider the word "abode". The letter `a` is in position 1
+and `b` is in position 2. In the alphabet, `a` and `b` are also in positions 1
+and 2.
+
+The letters `d` and `e` in "abode" occupy the positions they would occupy in
+the alphabet, which are positions 4 and 5. 
+
+Given an array of words, return an array of the number of letters that occupy
+their positions in the alphabet for each word. For example,
+
+solve(["abode","ABc","xyzD"]) // [4, 3, 1]
+
+Input will consist of alphabetic characters, both uppercase and lowercase. No
+spaces.
+
+P Given an array of strings, return an array of integers that count the number
+of characters that are in their alphabetic position.
+
+E
+- Letter case doesn't matter
+- Input is all alphabetic characters with no spaces
+- return 0 when no characters are in the right place */
+
+// // Python test cases // print(solve(["abode","ABc","xyzD"]) == [4,3,1]) #
+True // print(solve(["abide","ABc","xyz"]) == [4,3,0]) # True //
+print(solve(["IAMDEFANDJKL","thedefgh","xyzDEFghijabc"]) == [6,5,7]) # True //
+print(solve(["encode","abc","xyzD","ABmD"]) == [1, 3, 1, 3]) # True
+
+- declare an empty array, called numbers
+
+- iterate through the input array
+- invoke helper function on current string
+
+-- helper function, takes in a string
+---- declare a variable, called lowercased_string, set to a lowercased version
+of the passed in string
+---- declare a dictionary with each alphabet letter as a key and the position
+they are in the alphabet as the value.
+---- declare a variable initialized to 0, called count
 
 
+---- iterate through string
+---- pass in current element to dict as key, 
+---- if the value from dict is equal to the current index of loop, increment count variable by 1
+-- return count variable
 
+- append return value from helper function to numbers array
+- return array
+
+'''
+
+
+def solve(lst):
+    numbers = []
+    for string in lst:
+        count = element_check(string)
+        numbers.append(count)
+
+    return numbers
+
+
+def element_check(string):
+    counter = 0
+    obj = {
+        'a': 0, 'b': 1,
+        'c': 2, 'd': 3,
+        'e': 4, 'f': 5,
+        'g': 6, 'h': 7,
+        'i': 8, 'j': 9,
+        'k': 10, 'l': 11,
+        'm': 12, 'n': 13,
+        'o': 14, 'p': 15,
+        'q': 16, 'r': 17,
+        's': 18, 't': 19,
+        'u': 20, 'v': 21,
+        'w': 22, 'x': 23,
+        'y': 24, 'z': 25,
+    }
+
+    for idx ,letter in enumerate(string.casefold()):
+        val = obj[letter]
+        if val == idx:
+            counter += 1
+
+    return counter
+
+print(solve(["abode","ABc","xyzD"]) == [4,3,1]) #True
+print(solve(["abide","ABc","xyz"]) == [4,3,0]) # True
+print(solve(["IAMDEFANDJKL","thedefgh","xyzDEFghijabc"]) == [6,5,7]) # True
+print(solve(["encode","abc","xyzD","ABmD"]) == [1, 3, 1, 3]) # True
 
 
 
