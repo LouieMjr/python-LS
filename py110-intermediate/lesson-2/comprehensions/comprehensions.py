@@ -248,6 +248,7 @@ UUID.
 
 def generate_UUID():
     hexadec_char = '0123456789abcdef'
+    sections = [8, 4, 4, 4, 12]
     # UUID = [random.choice(hexadec_char) for _ in range(32) ]
 
     # for i in range(len(UUID)):
@@ -260,15 +261,6 @@ def generate_UUID():
 
     # print(len(UUID))
     return ''.join(UUID)
-
-    # while(len(UUID) < 36):
-    #     UUID += random.choice(hexadec_char)
-    #     print(UUID)
-    #
-    #     if len(UUID) in {8, 13, 18, 23, 28}:
-    #         UUID += '-'
-
-    # return UUID
 
 
 # print(generate_UUID())
