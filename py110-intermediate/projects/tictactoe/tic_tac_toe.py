@@ -1,14 +1,13 @@
 from pprint import pprint
+from random import randrange
 
-position_on_board = ('r1', 'r2', 'r3', 'c1', 'c2', 'c3', 'l1', 'l2', 'l3')
-circle_or_square = ('X', 'O')
+position_on_board = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
 
 def create_board():
     board = []
-    row = ['-', '-', '-']
 
     for _ in range(3):
-        board.append(row)
+        board.append(['-' for _ in range(3)])
 
     return board
 
@@ -19,10 +18,18 @@ def display_board(board):
     for row in board:
         print(row)
 
+def computer_start_character(user_pick):
+    if user_pick == 'X':
+        print('Computer picked: O')
+        return 'O'
+    else:
+        print('Computer picked: X')
+        return 'X'
 
-def user_starting_charcter():
+def user_start_character():
     pick = input('\nTo begin select a character: X or O: ').upper()
-    return f'You picked {pick}'
+    print(f'You picked: {pick}')
+    return pick
 
 # def user_selection_on_board(board):
 
@@ -36,14 +43,72 @@ def display_rules():
     print(rules, '\n')
     print(f'Here are some examples of winning boards\n\n{winning_board1}{winning_board2}{winning_board3}')
 
+def pick_square():
+    print('Make a selection on the board\nHere are you options:\n')
+    board_options = f'{[1, 2, 3]}\n{[4, 5, 6]}\n{[7, 8, 9]}\n'
+    print(board_options) 
+    position = int(input('Enter the number on the board that correlates to the position you want to select: '))
+    return position
+
+def is_board_position_open(list_of_numbers):
+    x, y = list_of_numbers
+    board_position = BOARD[x][y]
+    if board_position == '-':
+        return True
+    return False
+
+
+def generate_two_random_numbers():
+    random_numbers = []
+    for _ in range(2):
+        num = randrange(3)
+        random_numbers.append(num)
+    return random_numbers
+
+# def random_computer_choice():
+
+# def update_board():
+
+
+def game_logic():
+    position_on_board = {
+        1: [0, 0],
+        2: [0, 1],
+        3: [0, 2],
+        4: [1, 0],
+        5: [1, 1],
+        6: [1, 2],
+        7: [2, 0],
+        8: [2, 1],
+        9: [2, 2],
+    }
+
+    board_position_open = True
+
+    while board_position_open:
+        position = pick_square()
+        user_numbers = position_on_board[position]
+        if is_board_position_open(user_numbers):
+            board_position_open = False
+            print('yes')
+        else:
+            print('no')
+
+
+game_logic()
+
+
 def start_tic_tac_toe():
     print('Lets play some Tic Tac Toe!')
-    print("Here's the starting board.\n")
-    display_board(BOARD)
-
-    start_character = user_starting_charcter()
-    print(start_character)
+    print("Here are the rules before we begin.\n")
     display_rules()
 
-start_tic_tac_toe()
+    player_pick = user_start_character()
+    computer_pick = computer_start_character(player_pick)
+ 
+    display_board(BOARD)
+
+
+
+# start_tic_tac_toe()
 
