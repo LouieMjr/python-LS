@@ -50,12 +50,12 @@ def pick_square():
     position = int(input('Enter the number on the board that correlates to the position you want to select: '))
     return position
 
-def is_board_position_open(list_of_numbers):
-    x, y = list_of_numbers
-    board_position = BOARD[x][y]
-    if board_position == '-':
-        return True
-    return False
+# def is_board_position_open(list_of_numbers):
+#     x, y = list_of_numbers
+#     board_position = BOARD[x][y]
+#     if board_position == '-':
+#         return True
+#     return False
 
 
 def generate_two_random_numbers():
@@ -65,13 +65,23 @@ def generate_two_random_numbers():
         random_numbers.append(num)
     return random_numbers
 
-# def random_computer_choice():
+# def random_computer_choice(board_position_dict):
+#     x, y = generate_two_random_numbers()
 
-# def update_board():
+def update_board(list_of_numbers, player = 'computer'):
+    x, y = list_of_numbers
+    BOARD[x][y] = 'O' if player == 'computer' else 'X'
+
+    # if player == 'computer':
+    #     BOARD[x][y] = 'O'
+    # else:
+    #     BOARD[x][y] = 'X'
+
+
 
 
 def game_logic():
-    position_on_board = {
+    positions_on_board = {
         1: [0, 0],
         2: [0, 1],
         3: [0, 2],
@@ -83,16 +93,23 @@ def game_logic():
         9: [2, 2],
     }
 
-    board_position_open = True
+    while positions_on_board != {}:
 
-    while board_position_open:
-        position = pick_square()
-        user_numbers = position_on_board[position]
-        if is_board_position_open(user_numbers):
-            board_position_open = False
+        selection = pick_square()
+
+        if positions_on_board.get(selection) is not None:
+            user_numbers = positions_on_board[selection]
+            update_board(user_numbers, 'user')
+            del positions_on_board[selection]
+
+            # update_board()
+            print(BOARD)
+
             print('yes')
         else:
             print('no')
+
+
 
 
 game_logic()
