@@ -1,7 +1,19 @@
 from pprint import pprint
-from random import randrange
+from random import randrange, choice
 
 position_on_board = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
+
+x_and_y_axis_on_board = {
+    1: [0, 0],
+    2: [0, 1],
+    3: [0, 2],
+    4: [1, 0],
+    5: [1, 1],
+    6: [1, 2],
+    7: [2, 0],
+    8: [2, 1],
+    9: [2, 2],
+}
 
 def create_board():
     board = []
@@ -44,10 +56,10 @@ def display_rules():
     print(f'Here are some examples of winning boards\n\n{winning_board1}{winning_board2}{winning_board3}')
 
 def pick_square():
-    print('Make a selection on the board\nHere are you options:\n')
+    print('Make a selection on the board\nHere are your options:\n')
     board_options = f'{[1, 2, 3]}\n{[4, 5, 6]}\n{[7, 8, 9]}\n'
     print(board_options) 
-    position = int(input('Enter the number on the board that correlates to the position you want to select: '))
+    position = int(input('Enter the number on the board that\ncorrelates to the position you want to select: '))
     return position
 
 # def is_board_position_open(list_of_numbers):
@@ -58,58 +70,33 @@ def pick_square():
 #     return False
 
 
-def generate_two_random_numbers():
-    random_numbers = []
-    for _ in range(2):
-        num = randrange(3)
-        random_numbers.append(num)
-    return random_numbers
+def random_computer_choice(remaining_options):
+    pick = choice(remaining_options)
+    return [pick, x_and_y_axis_on_board[pick]]
 
-# def random_computer_choice(board_position_dict):
-#     x, y = generate_two_random_numbers()
-
-def update_board(list_of_numbers, player = 'computer'):
+def update_board(list_of_numbers, key, player = 'computer'):
     x, y = list_of_numbers
     BOARD[x][y] = 'O' if player == 'computer' else 'X'
-
-    # if player == 'computer':
-    #     BOARD[x][y] = 'O'
-    # else:
-    #     BOARD[x][y] = 'X'
-
-
-
+    del x_and_y_axis_on_board[key]
 
 def game_logic():
-    positions_on_board = {
-        1: [0, 0],
-        2: [0, 1],
-        3: [0, 2],
-        4: [1, 0],
-        5: [1, 1],
-        6: [1, 2],
-        7: [2, 0],
-        8: [2, 1],
-        9: [2, 2],
-    }
-
-    while positions_on_board != {}:
+    while x_and_y_axis_on_board != {}:
 
         selection = pick_square()
 
-        if positions_on_board.get(selection) is not None:
-            user_numbers = positions_on_board[selection]
-            update_board(user_numbers, 'user')
-            del positions_on_board[selection]
+        if x_and_y_axis_on_board.get(selection) is not None:
+            user_x_and_y = x_and_y_axis_on_board[selection]
+            update_board(user_x_and_y, selection, 'user')
 
-            # update_board()
-            print(BOARD)
+            positions_remaining = list(x_and_y_axis_on_board.keys())
+
+            key_to_delete, x_and_y = random_computer_choice(positions_remaining)
+            update_board(x_and_y, key_to_delete)
+            display_board(BOARD)
 
             print('yes')
         else:
             print('no')
-
-
 
 
 game_logic()
@@ -122,7 +109,7 @@ def start_tic_tac_toe():
 
     player_pick = user_start_character()
     computer_pick = computer_start_character(player_pick)
- 
+
     display_board(BOARD)
 
 
