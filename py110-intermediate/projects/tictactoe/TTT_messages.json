@@ -1,0 +1,9 @@
+{
+    "rules": "\nTic Tac Toe is a 2-player game played on a 3x3 grid called the board.\nEach player takes a turn and marks a square on the board. The first player\nto get 3 squares in a row -- horizontally, vertically, or diagonally -- wins.\nIf all 9 squares are filled and neither player has 3 in a row, the game ends in a tie.",
+    "win_example_msg": "\n\nHere are some examples of winning boards.\n\n",
+    "character_select": "\n\nWhen you're ready, select a character: X or O: ",
+    "available_board_options": "\nMake a selection on the board.\nHere are your remaining options:\n",
+    "select_position": "Enter the number on the board that correlates to the position you want to select: ",
+    "unavailable": "This is not an available choice. Choose again.\n",
+    "invalid_character": "Only the characters X or O is allowed. Case insensitive.\nPick again: "
+}
