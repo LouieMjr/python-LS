@@ -2,7 +2,7 @@ from random import choice
 from time import sleep
 from os import system
 import json
-from typing import is_typeddict
+import pdb
 
 with open('./TTT_messages.json') as file:
     MESSAGES = json.load(file)
@@ -37,7 +37,6 @@ def create_board():
 
     return board
 
-DISPLAY_BOARD = create_board()
 
 def print_board(board):
     for row in board:
@@ -114,16 +113,53 @@ def random_computer_choice(remaining_options):
     pick = choice(remaining_options)
     return [pick, INTERNAL_BOARD[pick]]
 
-def update_board(list_of_numbers, key, options_remaining, player = 'computer'):
+def update_board(BOARD, list_of_numbers, key, options_remaining, player = 'computer'):
     x, y = list_of_numbers
     character = 'O' if player == 'computer' else 'X'
-    DISPLAY_BOARD[x][y] = character
+    BOARD[x][y] = character
     del INTERNAL_BOARD[key]
     options_remaining[x][y] = '-'
 
 
+def is_winner(board, player_marker, computer_marker):
+    # row winner
+    for row in board:
+        if all(ele if ele == player_marker else False for ele in row):
+            return "Player"
+        if all(ele if ele == computer_marker else False for ele in row):
+            return "Computer"
 
-def game_logic():
+    top_left = board[0][0]
+    top_center = board[0][1]
+    top_right = board[0][2]
+    center_left = board[1][0]
+    center = board[1][1]
+    center_right = board[1][2]
+    bottom_left = board[2][0]
+    bottom_center = board[2][1]
+    bottom_right = board[2][2]
+
+    # diagonal player winner
+    if top_left == player_marker and top_left == center and center == bottom_right  or top_right == player_marker and top_right == center and center == bottom_left:
+        return 'Player'
+
+
+    # diagonal computer winner
+    if top_left == computer_marker and top_left == center and center == bottom_right  or top_right == computer_marker and top_right == center and center == bottom_left:
+        return 'Computer'
+
+    # column player winner
+    if top_left == player_marker and top_left == center_left and center_left == bottom_left or top_right == player_marker and top_right == center_right and center_right == bottom_left or top_center == player_marker and top_center == center and center == bottom_center:
+        return 'Player'
+
+    # column computer winner
+    if top_left == computer_marker and top_left == center_left and center_left == bottom_left or top_right == computer_marker and top_right == center_right and center_right == bottom_left or top_center == computer_marker and top_center == center and center == bottom_center:
+        return 'Computer'
+
+
+    return None
+
+def game_logic(BOARD, player_choice, computer_choice):
     while INTERNAL_BOARD != {}:
 
         square, board_options = user_picks_square()
@@ -132,25 +168,28 @@ def game_logic():
             PRINT(f'Position {square} is unavailable. Try again.\n')
 
         else:
-            is_winner(DISPLAY_BOARD)
             user_x_and_y = INTERNAL_BOARD[square]
-            update_board(user_x_and_y, square, board_options, 'user')
-
+            update_board(BOARD, user_x_and_y, square, board_options, 'user')
+            result = is_winner(BOARD, player_choice, computer_choice)
             positions_remaining = list(INTERNAL_BOARD.keys())
-
+            if isinstance(result, str):
+                return f'{result} WINNER'
             computer_square, x_and_y = random_computer_choice(positions_remaining)
-            update_board(x_and_y, computer_square, board_options)
-            print_board(DISPLAY_BOARD)
+            update_board(BOARD, x_and_y, computer_square, board_options)
+            print_board(BOARD)
+
+    PRINT('NO WINNER, GAME ENDS IN TIE')
 
 def start_tic_tac_toe():
+    DISPLAY_BOARD = create_board()
     PRINT('Lets play some Tic Tac Toe!\n')
     PRINT("Here are the rules before we begin.\n")
     display_rules()
 
     player_pick = user_start_character()
-    computer_start_character(player_pick)
+    computer_pick = computer_start_character(player_pick)
 
-    game_logic()
+    print(game_logic(DISPLAY_BOARD, player_pick, computer_pick))
 
 
 start_tic_tac_toe()
