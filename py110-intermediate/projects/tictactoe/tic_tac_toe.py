@@ -7,21 +7,6 @@ import pdb
 with open('./TTT_messages.json') as file:
     MESSAGES = json.load(file)
 
-board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-
-INTERNAL_BOARD = {
-    1: [0, 0],
-    2: [0, 1],
-    3: [0, 2],
-    4: [1, 0],
-    5: [1, 1],
-    6: [1, 2],
-    7: [2, 0],
-    8: [2, 1],
-    9: [2, 2],
-}
-
-
 def print_with_typing_effect(message, time = 0.02):
     for char in message:
         print(char, end='', flush=True)
@@ -36,7 +21,6 @@ def create_board():
         board.append(['-' for _ in range(3)])
 
     return board
-
 
 def print_board(board):
     for row in board:
@@ -66,19 +50,7 @@ def validate_user_character(input):
         return False
     return True
 
-def display_rules():
-
-    winning_board1 = f'{['X', 'o', 'x']}-{['o', 'o', 'X']}-{['X', 'X', 'X']}\n'
-    winning_board2 = f'{['X', 'o', 'o']}-{['o', 'X', 'X']}-{['o', 'o', 'x']}\n'
-    winning_board3 = f'{['X', 'x', 'o']}-{['X', 'o', 'o']}-{['x', 'o', 'o']}'
-
-    rules = MESSAGES['rules']
-    # PRINT(rules)
-
-    win_ex_msg = MESSAGES['win_example_msg']
-    # PRINT(f'{win_ex_msg}{winning_board1}{winning_board2}{winning_board3}')
-
-def user_picks_square():
+def user_picks_cell(internal_board, board_options):
     if board_options == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]:
         PRINT(MESSAGES['available_board_options'])
 
@@ -86,48 +58,33 @@ def user_picks_square():
     display_board_options = f'\n{row1}\n{row2}\n{row3}\n\n'
     PRINT(display_board_options)
 
-    try:
-        position = int(input(MESSAGES['select_position']))
+    cell = input(MESSAGES['select_position'])
 
-        if is_valid_board_position(position):
-            system('clear')
-            return [position, board_options]
-        else:
-            PRINT(MESSAGES['unavailable'])
-            return user_picks_square()
-
-    except (ValueError, TypeError):
+    if is_valid_board_position(cell, internal_board):
+        system('clear')
+        return int(cell)
+    else:
+        system('clear')
         PRINT(MESSAGES['unavailable'])
-        return user_picks_square()
+        return user_picks_cell(internal_board, board_options)
 
-
-def is_valid_board_position(number):
-    valid_number = number in [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-    if isinstance(number, int) and valid_number:
-        return True
-    return False
-
+def is_valid_board_position(input, internal_board):
+    return input in '123456789' and int(input) in internal_board.keys()
 
 def random_computer_choice(remaining_options):
-    pick = choice(remaining_options)
-    return [pick, INTERNAL_BOARD[pick]]
+    return choice(remaining_options)
 
-def update_board(BOARD, list_of_numbers, key, options_remaining, player = 'computer'):
-    x, y = list_of_numbers
-    character = 'O' if player == 'computer' else 'X'
-    BOARD[x][y] = character
-    del INTERNAL_BOARD[key]
-    options_remaining[x][y] = '-'
+def update_board(display_board, list_coordinates, display_options_remaining,
+                 marker):
+    x, y = list_coordinates
+    display_board[x][y] = marker
+    display_options_remaining[x][y] = '-'
 
-
-def is_winner(board, player_marker, computer_marker):
+def check_for_winner(board, marker, current_player):
     # row winner
     for row in board:
-        if all(ele if ele == player_marker else False for ele in row):
-            return "Player"
-        if all(ele if ele == computer_marker else False for ele in row):
-            return "Computer"
+        if all(ele if ele == marker else False for ele in row):
+            return current_player
 
     top_left = board[0][0]
     top_center = board[0][1]
@@ -139,57 +96,91 @@ def is_winner(board, player_marker, computer_marker):
     bottom_center = board[2][1]
     bottom_right = board[2][2]
 
-    # diagonal player winner
-    if top_left == player_marker and top_left == center and center == bottom_right  or top_right == player_marker and top_right == center and center == bottom_left:
-        return 'Player'
+    # diagonal winner
+    if top_left == marker and top_left == center and center == bottom_right  or top_right == marker and top_right == center and center == bottom_left:
+        return current_player
 
+    # column winner
+    if top_left == marker and top_left == center_left and center_left == bottom_left or top_right == marker and top_right == center_right and center_right == bottom_right or top_center == marker and top_center == center and center == bottom_center:
+        return current_player
 
-    # diagonal computer winner
-    if top_left == computer_marker and top_left == center and center == bottom_right  or top_right == computer_marker and top_right == center and center == bottom_left:
-        return 'Computer'
+    return False
 
-    # column player winner
-    if top_left == player_marker and top_left == center_left and center_left == bottom_left or top_right == player_marker and top_right == center_right and center_right == bottom_left or top_center == player_marker and top_center == center and center == bottom_center:
-        return 'Player'
+def game_logic(display_board, player_marker, computer_marker):
 
-    # column computer winner
-    if top_left == computer_marker and top_left == center_left and center_left == bottom_left or top_right == computer_marker and top_right == center_right and center_right == bottom_left or top_center == computer_marker and top_center == center and center == bottom_center:
-        return 'Computer'
+    board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
+    INTERNAL_BOARD = {
+        1: [0, 0],
+        2: [0, 1],
+        3: [0, 2],
+        4: [1, 0],
+        5: [1, 1],
+        6: [1, 2],
+        7: [2, 0],
+        8: [2, 1],
+        9: [2, 2],
+    }
 
-    return None
-
-def game_logic(BOARD, player_choice, computer_choice):
     while INTERNAL_BOARD != {}:
 
-        square, board_options = user_picks_square()
+        cell = user_picks_cell(INTERNAL_BOARD, board_options)
 
-        if INTERNAL_BOARD.get(square) is None:
-            PRINT(f'Position {square} is unavailable. Try again.\n')
+        if INTERNAL_BOARD.get(cell) is None:
+            PRINT(f'Position {cell} is unavailable. Try again.\n')
 
         else:
-            user_x_and_y = INTERNAL_BOARD[square]
-            update_board(BOARD, user_x_and_y, square, board_options, 'user')
-            result = is_winner(BOARD, player_choice, computer_choice)
+            cell_coordinates = INTERNAL_BOARD[cell]
+            del INTERNAL_BOARD[cell]
+            update_board(display_board, cell_coordinates, board_options,
+                         player_marker)
+            result = check_for_winner(display_board, player_marker, 'Player')
+
+            if result:
+                print_board(display_board)
+                display_winner(result)
+                return
+
             positions_remaining = list(INTERNAL_BOARD.keys())
-            if isinstance(result, str):
-                return f'{result} WINNER'
-            computer_square, x_and_y = random_computer_choice(positions_remaining)
-            update_board(BOARD, x_and_y, computer_square, board_options)
-            print_board(BOARD)
+
+            cell = random_computer_choice(positions_remaining)
+            cell_coordinates = INTERNAL_BOARD[cell]
+            del INTERNAL_BOARD[cell]
+            update_board(display_board, cell_coordinates, board_options,
+                         computer_marker)
+            result = check_for_winner(display_board, computer_marker, 'Computer')
+            if result:
+                print_board(display_board)
+                display_winner(result)
+                return
+            print_board(display_board)
 
     PRINT('NO WINNER, GAME ENDS IN TIE')
+
+def display_winner(input):
+    PRINT(f'{input} WINNER\n')
+
+def display_rules():
+
+    winning_board1 = f'{['X', 'o', 'x']}-{['o', 'o', 'X']}-{['X', 'X', 'X']}\n'
+    winning_board2 = f'{['X', 'o', 'o']}-{['o', 'X', 'X']}-{['o', 'o', 'x']}\n'
+    winning_board3 = f'{['X', 'x', 'o']}-{['X', 'o', 'o']}-{['x', 'o', 'o']}'
+
+    rules = MESSAGES['rules']
+    PRINT(rules)
+
+    win_ex_msg = MESSAGES['win_example_msg']
+    PRINT(f'{win_ex_msg}{winning_board1}{winning_board2}{winning_board3}')
 
 def start_tic_tac_toe():
     DISPLAY_BOARD = create_board()
     PRINT('Lets play some Tic Tac Toe!\n')
-    PRINT("Here are the rules before we begin.\n")
-    display_rules()
+    # display_rules()
 
     player_pick = user_start_character()
     computer_pick = computer_start_character(player_pick)
 
-    print(game_logic(DISPLAY_BOARD, player_pick, computer_pick))
+    game_logic(DISPLAY_BOARD, player_pick, computer_pick)
 
 
 start_tic_tac_toe()
