@@ -5,5 +5,7 @@
     "available_board_options": "\nMake a selection on the board.\nHere are your options:\n",
     "select_position": "Enter the number on the board that correlates to the position you want to select: ",
     "unavailable": "This is not an available choice. Choose again.\n",
-    "invalid_character": "Only the characters X or O is allowed. Case insensitive.\nPick again: "
+    "invalid_character": "Only the characters X or O is allowed. Case insensitive.\nPick again: ",
+    "restart": "\nWould you like to play again?\nyes/y or no/n? ",
+    "invalid_restart": "\nValid responses are (Yes/Y) or (No/N): "
 }

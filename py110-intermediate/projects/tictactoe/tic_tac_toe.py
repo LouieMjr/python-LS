@@ -172,16 +172,31 @@ def display_rules():
     win_ex_msg = MESSAGES['win_example_msg']
     PRINT(f'{win_ex_msg}{winning_board1}{winning_board2}{winning_board3}')
 
-def start_tic_tac_toe():
-    DISPLAY_BOARD = create_board()
-    PRINT('Lets play some Tic Tac Toe!\n')
-    # display_rules()
+def restart_game(msg = MESSAGES['restart']):
+    PRINT(msg)
+    response = input()[0].upper()
+    if response in ['Yes', 'Y']:
+        system('clear')
+        return play_tic_tac_toe()
+    elif response in ['No', 'N']:
+        PRINT('\nThank you for playing\n')
+    else:
+        return restart_game(MESSAGES['invalid_restart'])
+
+def play_tic_tac_toe():
 
     player_pick = user_start_character()
     computer_pick = computer_start_character(player_pick)
 
+    DISPLAY_BOARD = create_board()
     game_logic(DISPLAY_BOARD, player_pick, computer_pick)
+    return restart_game()
 
+def start_tic_tac_toe():
+    PRINT('Lets play some Tic Tac Toe!\n')
+    display_rules()
+
+    play_tic_tac_toe()
 
 start_tic_tac_toe()
 
