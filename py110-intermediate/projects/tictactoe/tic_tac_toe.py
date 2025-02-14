@@ -1,7 +1,7 @@
 from random import choice
 from time import sleep
 from os import system
-import json
+import json, math
 
 with open('./TTT_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
@@ -179,13 +179,13 @@ def play_round(display_board, player_marker, computer_marker):
 
     return PRINT('Round ended in a tie!')
 
-def display_current_score(score_tracker):
+def display_current_score(score_tracker, rounds_to_win):
     player_total = score_tracker['Player']
     computer_total = score_tracker['Computer']
     zero = computer_total + player_total
 
     if zero == 0:
-        PRINT("It's 0 to 0. First to 2 rounds wins!\n")
+        PRINT(f"It's 0 to 0. First to {rounds_to_win} rounds wins!\n")
         return
     if player_total > computer_total and player_total == 1:
         PRINT(f"You're winning: {player_total} round to {computer_total}.\n"
@@ -202,8 +202,8 @@ def display_current_score(score_tracker):
         PRINT(f'You lost! {computer_total} rounds to {player_total}.\n')
         return
 
-    PRINT(f"It's currently a tie: {player_total} to\
-    {computer_total}. Keep Fighting!\n")
+    PRINT(f"It's currently a tie: {player_total} to {computer_total}."
+        "Keep Fighting!\n")
 
 def display_rules():
 
@@ -229,15 +229,24 @@ def restart_game(msg = MESSAGES['restart']):
 
     return restart_game(MESSAGES['invalid_restart'])
 
+def rounds_needed_to_win(total_rounds):
+    round_number_up = math.ceil(total_rounds / 2)
+    return round_number_up if total_rounds % 2 == 1 else round_number_up + 1
+
 def play_tic_tac_toe():
 
     player_pick = user_start_character()
     computer_pick = computer_start_character(player_pick)
 
     score_tracker = {"Player": 0, "Computer": 0}
-    display_current_score(score_tracker)
 
-    rounds = 3
+    rounds = 8
+    # you can changes "rounds" to any number, func below will adapt to
+    # proper amount of rounds needed to win
+    rounds_to_win = rounds_needed_to_win(rounds)
+    display_current_score(score_tracker, rounds_to_win)
+    print(rounds_to_win)
+
     while rounds > 0:
 
         rounds -= 1
@@ -247,8 +256,10 @@ def play_tic_tac_toe():
         if round_winner:
             PRINT(f'{round_winner} won that round!\n')
             score_tracker[round_winner] += 1
-            display_current_score(score_tracker)
-            if score_tracker[round_winner] == 2:
+            display_current_score(score_tracker, rounds_to_win)
+            print(score_tracker[round_winner] == rounds_to_win,
+                  score_tracker[round_winner], rounds_to_win)
+            if score_tracker[round_winner] == rounds_to_win:
                 PRINT(f'{round_winner} Wins The Game!\n')
                 print_board(display_board)
                 break
