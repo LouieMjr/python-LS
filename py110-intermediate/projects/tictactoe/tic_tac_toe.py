@@ -99,69 +99,114 @@ def check_round_winner(board, marker, current_player):
     bottom_center = board[2][1]
     bottom_right = board[2][2]
 
+
+    top_left_to_bottom_right = (top_left == marker
+                                and top_left == center
+                                and center == bottom_right)
+
+    top_right_to_bottom_left = (top_right == marker
+                                and top_right == center
+                                and center == bottom_left)
     # diagonal winner
-    if top_left == marker and top_left == center and center == bottom_right  or top_right == marker and top_right == center and center == bottom_left:
+    if (top_right_to_bottom_left or top_left_to_bottom_right):
         return current_player
 
+    left_column = (top_left == marker
+                    and top_left == center_left
+                    and center_left == bottom_left)
+
+    right_column = (top_right == marker
+                    and top_right == center_right
+                    and center_right == bottom_right)
+    center_column = (top_center == marker
+                     and top_center == center
+                     and center == bottom_center)
+
     # column winner
-    if top_left == marker and top_left == center_left and center_left == bottom_left or top_right == marker and top_right == center_right and center_right == bottom_right or top_center == marker and top_center == center and center == bottom_center:
+    if (left_column or right_column or center_column):
         return current_player
 
     return False
 
-def game_logic(display_board, player_marker, computer_marker):
+def update_score(score):
+    score += 1
+    return score
+
+def initial_game_state():
 
     board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
-    INTERNAL_BOARD = {
-        1: [0, 0],
-        2: [0, 1],
-        3: [0, 2],
-        4: [1, 0],
-        5: [1, 1],
-        6: [1, 2],
-        7: [2, 0],
-        8: [2, 1],
-        9: [2, 2],
+    internal_board = {
+        1: [0, 0], # top left
+        2: [0, 1], # top center
+        3: [0, 2], # top right
+        4: [1, 0], # center left
+        5: [1, 1], # center
+        6: [1, 2], # center right
+        7: [2, 0], # bottom left
+        8: [2, 1], # bottom center
+        9: [2, 2], # bottom right
     }
 
-    while INTERNAL_BOARD != {}:
+    return [board_options, internal_board]
 
-        cell = user_picks_cell(INTERNAL_BOARD, board_options)
+def play_round(display_board, player_marker, computer_marker):
+    board_options, internal_board = initial_game_state()
 
-        if INTERNAL_BOARD.get(cell) is None:
+    while internal_board != {}:
+
+        current_turn = ('Player' if len(internal_board.keys()) % 2 == 1
+                                 else 'Computer')
+
+        current_marker = (player_marker if current_turn == 'Player' 
+                                       else computer_marker)
+        cell = select_cell(internal_board, board_options, current_turn)
+
+        if internal_board.get(cell) is None:
             PRINT(f'Position {cell} is unavailable. Try again.\n')
-
-        else:
-            cell_coordinates = INTERNAL_BOARD[cell]
-            del INTERNAL_BOARD[cell]
-            update_board(display_board, cell_coordinates, board_options,
-                         player_marker)
-            result = check_for_winner(display_board, player_marker, 'Player')
-
-            if result:
-                print_board(display_board)
-                display_winner(result)
-                return
-
-            positions_remaining = list(INTERNAL_BOARD.keys())
-
-            cell = random_computer_choice(positions_remaining)
-            cell_coordinates = INTERNAL_BOARD[cell]
-            del INTERNAL_BOARD[cell]
-            update_board(display_board, cell_coordinates, board_options,
-                         computer_marker)
-            result = check_for_winner(display_board, computer_marker, 'Computer')
-            if result:
-                print_board(display_board)
-                display_winner(result)
-                return
             print_board(display_board)
 
-    PRINT('NO WINNER, GAME ENDS IN TIE')
+        else:
+            cell_coordinates = internal_board[cell]
+            del internal_board[cell]
+            update_board(display_board, cell_coordinates, board_options,
+                         current_marker)
 
-def display_winner(input):
-    PRINT(f'{input} WINNER\n')
+            round_winner = check_round_winner(display_board, current_marker,
+            current_turn)
+            if round_winner:
+                return round_winner
+
+            if current_turn == 'Computer':
+                print_board(display_board)
+
+    return PRINT('Round ended in a tie!')
+
+def display_current_score(score_tracker):
+    player_total = score_tracker['Player']
+    computer_total = score_tracker['Computer']
+    zero = computer_total + player_total
+
+    if zero == 0:
+        PRINT("It's 0 to 0. First to 2 rounds wins!\n")
+        return
+    if player_total > computer_total and player_total == 1:
+        PRINT(f"You're winning: {player_total} round to {computer_total}.\n"
+        "You're almost there!\n")
+        return
+    if player_total < computer_total and computer_total == 1:
+        PRINT(f"You're losing: {computer_total} round to {player_total}.\n"
+        "Don't give up!\n")
+        return
+    if player_total == 2:
+        PRINT(f'You won! {player_total} rounds to {computer_total}.\n')
+        return
+    if computer_total == 2:
+        PRINT(f'You lost! {computer_total} rounds to {player_total}.\n')
+        return
+
+    PRINT(f"It's currently a tie: {player_total} to\
+    {computer_total}. Keep Fighting!\n")
 
 def display_rules():
 
@@ -172,34 +217,54 @@ def display_rules():
     rules = MESSAGES['rules']
     PRINT(rules)
 
-    win_ex_msg = MESSAGES['win_example_msg']
-    PRINT(f'{win_ex_msg}{winning_board1}{winning_board2}{winning_board3}')
+    win_example_msg = MESSAGES['win_example_msg']
+    PRINT(f'{win_example_msg}{winning_board1}{winning_board2}{winning_board3}')
 
 def restart_game(msg = MESSAGES['restart']):
     PRINT(msg)
     response = input()[0].upper()
+
     if response in ['Yes', 'Y']:
         system('clear')
         return play_tic_tac_toe()
-    elif response in ['No', 'N']:
-        PRINT('\nThank you for playing\n')
-    else:
-        return restart_game(MESSAGES['invalid_restart'])
+    if response in ['No', 'N']:
+        return PRINT('\nThank you for playing!\n')
+
+    return restart_game(MESSAGES['invalid_restart'])
 
 def play_tic_tac_toe():
 
     player_pick = user_start_character()
     computer_pick = computer_start_character(player_pick)
 
-    DISPLAY_BOARD = create_board()
-    game_logic(DISPLAY_BOARD, player_pick, computer_pick)
+    score_tracker = {"Player": 0, "Computer": 0}
+    display_current_score(score_tracker)
+
+    rounds = 3
+    while rounds > 0:
+
+        rounds -= 1
+        display_board = create_board()
+        round_winner = play_round(display_board, player_pick, computer_pick)
+
+        if round_winner:
+            PRINT(f'{round_winner} won that round!\n')
+            score_tracker[round_winner] += 1
+            display_current_score(score_tracker)
+            if score_tracker[round_winner] == 2:
+                PRINT(f'{round_winner} Wins The Game!\n')
+                print_board(display_board)
+                break
+
+        if rounds == 0:
+            PRINT('\nGame has ended in a tie!\n')
+
     return restart_game()
 
-def start_tic_tac_toe():
-    PRINT('Lets play some Tic Tac Toe!\n')
-    display_rules()
+def initialize_game():
+    # PRINT('Lets play some Tic Tac Toe!\n')
+    # display_rules()
 
     play_tic_tac_toe()
 
-start_tic_tac_toe()
-
+initialize_game()
