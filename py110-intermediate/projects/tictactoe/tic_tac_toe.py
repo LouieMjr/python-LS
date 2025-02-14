@@ -2,9 +2,8 @@ from random import choice
 from time import sleep
 from os import system
 import json
-import pdb
 
-with open('./TTT_messages.json') as file:
+with open('./TTT_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
 
 def print_with_typing_effect(message, time = 0.02):
@@ -30,9 +29,9 @@ def computer_start_character(user_pick):
     if user_pick == 'X':
         PRINT('Computer picked: O\n\n')
         return 'O'
-    else:
-        PRINT('Computer picked: X\n\n')
-        return 'X'
+
+    PRINT('Computer picked: X\n\n')
+    return 'X'
 
 def user_start_character(msg = MESSAGES['character_select']):
     PRINT(msg)
@@ -42,37 +41,41 @@ def user_start_character(msg = MESSAGES['character_select']):
         system('clear')
         PRINT(f'\nYou picked: {pick}\n')
         return pick
-    else:
-        return user_start_character(MESSAGES['invalid_character'])
 
-def validate_user_character(input):
-    if input != 'X' and input != 'O':
+    return user_start_character(MESSAGES['invalid_character'])
+
+def validate_user_character(user_input):
+    if user_input not in ('X', 'O'):
         return False
     return True
 
-def user_picks_cell(internal_board, board_options):
-    if board_options == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]:
+def select_cell(internal_board, remaining_options, current_player):
+    if current_player == 'Computer':
+        return choice(list(internal_board.keys()))
+
+    if remaining_options == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]:
         PRINT(MESSAGES['available_board_options'])
 
-    row1, row2, row3 = board_options
+    row1, row2, row3 = remaining_options
     display_board_options = f'\n{row1}\n{row2}\n{row3}\n\n'
-    PRINT(display_board_options)
+    print(display_board_options)
 
-    cell = input(MESSAGES['select_position'])
-
+    PRINT(MESSAGES['select_position'])
+    cell = input()
     if is_valid_board_position(cell, internal_board):
         system('clear')
         return int(cell)
-    else:
-        system('clear')
-        PRINT(MESSAGES['unavailable'])
-        return user_picks_cell(internal_board, board_options)
 
-def is_valid_board_position(input, internal_board):
-    return input in '123456789' and int(input) in internal_board.keys()
+    system('clear')
+    PRINT(MESSAGES['unavailable'])
+    return select_cell(internal_board, remaining_options, current_player)
 
-def random_computer_choice(remaining_options):
-    return choice(remaining_options)
+def is_valid_board_position(user_input, internal_board):
+    return (user_input in '123456789'
+            and int(user_input) in internal_board.keys())
+
+# def random_computer_choice(remaining_options):
+#     return choice(remaining_options)
 
 def update_board(display_board, list_coordinates, display_options_remaining,
                  marker):
@@ -80,7 +83,7 @@ def update_board(display_board, list_coordinates, display_options_remaining,
     display_board[x][y] = marker
     display_options_remaining[x][y] = '-'
 
-def check_for_winner(board, marker, current_player):
+def check_round_winner(board, marker, current_player):
     # row winner
     for row in board:
         if all(ele if ele == marker else False for ele in row):
