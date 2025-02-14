@@ -158,7 +158,7 @@ def play_round(display_board, player_marker, computer_marker):
         current_turn = ('Player' if len(internal_board.keys()) % 2 == 1
                                  else 'Computer')
 
-        current_marker = (player_marker if current_turn == 'Player' 
+        current_marker = (player_marker if current_turn == 'Player'
                                        else computer_marker)
         cell = select_cell(internal_board, board_options, current_turn)
 
