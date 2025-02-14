@@ -74,9 +74,6 @@ def is_valid_board_position(user_input, internal_board):
     return (user_input in '123456789'
             and int(user_input) in internal_board.keys())
 
-# def random_computer_choice(remaining_options):
-#     return choice(remaining_options)
-
 def update_board(display_board, list_coordinates, display_options_remaining,
                  marker):
     x, y = list_coordinates
