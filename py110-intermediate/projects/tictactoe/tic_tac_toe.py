@@ -1,7 +1,8 @@
 from random import choice
 from time import sleep
 from os import system
-import json, math
+import json
+import math
 
 with open('./TTT_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
@@ -177,33 +178,49 @@ def play_round(display_board, player_marker, computer_marker):
             if current_turn == 'Computer':
                 print_board(display_board)
 
-    return PRINT('Round ended in a tie!')
+    return PRINT('Round ended in a tie!\n')
 
-def display_current_score(score_tracker, rounds_to_win):
+def remove_s_from_round(string):
+    list_of_words = string.split(' ')
+    list_of_words[list_of_words.index('rounds')] = 'round'
+    return ' '.join(list_of_words)
+
+def display_current_score(score_tracker, rounds_to_win, rounds):
     player_total = score_tracker['Player']
     computer_total = score_tracker['Computer']
     zero = computer_total + player_total
 
     if zero == 0:
-        PRINT(f"It's 0 to 0. First to {rounds_to_win} rounds wins!\n")
-        return
-    if player_total > computer_total and player_total == 1:
-        PRINT(f"You're winning: {player_total} round to {computer_total}.\n"
-        "You're almost there!\n")
-        return
-    if player_total < computer_total and computer_total == 1:
-        PRINT(f"You're losing: {computer_total} round to {player_total}.\n"
-        "Don't give up!\n")
-        return
-    if player_total == 2:
-        PRINT(f'You won! {player_total} rounds to {computer_total}.\n')
-        return
-    if computer_total == 2:
-        PRINT(f'You lost! {computer_total} rounds to {player_total}.\n')
-        return
+        return PRINT(
+            f"Best of {rounds} games.\nIt's 0 to 0. First to {rounds_to_win} "
+            "rounds wins!\n")
 
-    PRINT(f"It's currently a tie: {player_total} to {computer_total}."
-        "Keep Fighting!\n")
+    if player_total == rounds_to_win:
+        return PRINT(f'You won! {player_total} rounds to {computer_total}.\n')
+
+    if computer_total == rounds_to_win:
+        return PRINT(f'You lost! {computer_total} rounds to {player_total}.\n')
+
+    if player_total > computer_total:
+        msg = (f"You're winning: {player_total} rounds to {computer_total}.\n"
+        "You're almost there!\n")
+        if player_total == 1:
+            return PRINT(remove_s_from_round(msg))
+
+        return PRINT(msg)
+
+    if player_total < computer_total:
+        msg = (f"You're losing: {computer_total} rounds to {player_total}.\n"
+        "Don't give up!\n")
+        if computer_total == 1:
+            return PRINT(remove_s_from_round(msg))
+
+        return PRINT(msg)
+
+    if player_total == computer_total:
+        return PRINT(
+            f"It's currently a tie: {player_total} to {computer_total}."
+            "\nKeep Fighting!\n")
 
 def display_rules():
 
