@@ -257,25 +257,22 @@ def play_tic_tac_toe():
 
     score_tracker = {"Player": 0, "Computer": 0}
 
-    rounds = 8
-    # you can changes "rounds" to any number, func below will adapt to
-    # proper amount of rounds needed to win
+    rounds = 5
+    # you can changes "rounds" to any number, func below will
+    # adapt to give proper amount of rounds needed to win
     rounds_to_win = rounds_needed_to_win(rounds)
-    display_current_score(score_tracker, rounds_to_win)
-    print(rounds_to_win)
+    display_current_score(score_tracker, rounds_to_win, rounds)
 
     while rounds > 0:
 
-        rounds -= 1
         display_board = create_board()
         round_winner = play_round(display_board, player_pick, computer_pick)
 
         if round_winner:
+            rounds -= 1
             PRINT(f'{round_winner} won that round!\n')
             score_tracker[round_winner] += 1
-            display_current_score(score_tracker, rounds_to_win)
-            print(score_tracker[round_winner] == rounds_to_win,
-                  score_tracker[round_winner], rounds_to_win)
+            display_current_score(score_tracker, rounds_to_win, rounds)
             if score_tracker[round_winner] == rounds_to_win:
                 PRINT(f'{round_winner} Wins The Game!\n')
                 print_board(display_board)
