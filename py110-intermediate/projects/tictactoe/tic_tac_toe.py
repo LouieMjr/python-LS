@@ -50,9 +50,6 @@ def validate_user_character(user_input):
         return False
     return True
 
-PLAYER_PICK = user_start_character()
-COMPUTER_PICK = computer_start_character(PLAYER_PICK)
-
 def computer_strategy(all_options, marker_1, marker_2):
     # this works as offense or defense depending what position, computer_pick
     # or player_pick is passed in as an argument
@@ -62,8 +59,11 @@ def computer_strategy(all_options, marker_1, marker_2):
                             for cell in option_list
                             if isinstance(cell, int)]
 
-def computer_selects_cell(internal_board, remaining_options):
+def computer_pick_cell(internal_board, remaining_options, markers):
     # columns = [list(col) for col in zip(*remaining_options)]
+
+    player_marker = markers[0]
+    computer_marker = markers[1]
 
     columns = [
         [remaining_options[i][j] for i in range(3)]
@@ -77,13 +77,15 @@ def computer_selects_cell(internal_board, remaining_options):
     offense_and_defense_options = rows + columns + diagonals
 
     computer_offensive_options = computer_strategy(offense_and_defense_options,
-                                                    COMPUTER_PICK, PLAYER_PICK)
+                                                   computer_marker,
+                                                   player_marker)
 
     if len(computer_offensive_options) > 0:
         return choice(computer_offensive_options)
 
     computer_defensive_options = computer_strategy(offense_and_defense_options,
-                                                    PLAYER_PICK, COMPUTER_PICK)
+                                                   player_marker,
+                                                   computer_marker)
 
     if len(computer_defensive_options) > 0:
         return choice(computer_defensive_options)
@@ -95,9 +97,9 @@ def computer_selects_cell(internal_board, remaining_options):
 
     return choice(list_of_open_cells)
 
-def select_cell(internal_board, remaining_options, current_player):
+def select_cell(internal_board, remaining_options, current_player, markers):
     if current_player == 'Computer':
-        return computer_selects_cell(internal_board, remaining_options)
+        return computer_pick_cell(internal_board, remaining_options, markers)
 
     if remaining_options == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]:
         PRINT(MESSAGES['available_board_options'])
@@ -114,7 +116,8 @@ def select_cell(internal_board, remaining_options, current_player):
 
     system('clear')
     PRINT(MESSAGES['unavailable'])
-    return select_cell(internal_board, remaining_options, current_player)
+    return select_cell(internal_board, remaining_options, current_player,
+                       markers)
 
 def is_valid_board_position(user_input, internal_board):
     return (user_input in '123456789'
@@ -203,7 +206,8 @@ def play_round(display_board, player_marker, computer_marker):
 
         current_marker = (player_marker if current_turn == 'Player'
                                        else computer_marker)
-        cell = select_cell(internal_board, board_options, current_turn)
+        cell = select_cell(internal_board, board_options, current_turn,
+                           [player_marker, computer_marker])
 
         if internal_board.get(cell) is None:
             PRINT(f'Position {cell} is unavailable. Try again.\n')
@@ -268,10 +272,9 @@ def display_current_score(score_tracker, rounds_to_win, rounds):
             "\nKeep Fighting!\n")
 
 def display_rules():
-
     winning_board1 = f'{['X', 'o', 'x']}-{['o', 'o', 'X']}-{['X', 'X', 'X']}\n'
     winning_board2 = f'{['X', 'o', 'o']}-{['o', 'X', 'X']}-{['o', 'o', 'x']}\n'
-    winning_board3 = f'{['X', 'x', 'o']}-{['X', 'o', 'o']}-{['x', 'o', 'o']}'
+    winning_board3 = f'{['X', 'x', 'o']}-{['X', 'o', 'o']}-{['x', 'o', 'o']}\n'
 
     rules = MESSAGES['rules']
     PRINT(rules)
@@ -298,10 +301,12 @@ def rounds_needed_to_win(total_rounds):
 
 def play_tic_tac_toe():
 
+    player_character = user_start_character()
+    computer_character = computer_start_character(player_character)
     score_tracker = {"Player": 0, "Computer": 0}
 
     rounds = 3
-    # you can changes "rounds" to any number, func below will
+    # you can change "rounds" to any number, func below will
     # adapt to give proper amount of rounds needed to win
     rounds_to_win = rounds_needed_to_win(rounds)
     display_current_score(score_tracker, rounds_to_win, rounds)
@@ -309,7 +314,9 @@ def play_tic_tac_toe():
     while rounds > 0:
 
         display_board = create_board()
-        round_winner = play_round(display_board, PLAYER_PICK, COMPUTER_PICK)
+        round_winner = play_round(display_board,
+                                  player_character,
+                                  computer_character)
 
         if round_winner:
             rounds -= 1
@@ -327,8 +334,8 @@ def play_tic_tac_toe():
     return restart_game()
 
 def initialize_game():
-    # PRINT('Lets play some Tic Tac Toe!\n')
-    # display_rules()
+    PRINT('Lets play some Tic Tac Toe!\n')
+    display_rules()
 
     play_tic_tac_toe()
 
