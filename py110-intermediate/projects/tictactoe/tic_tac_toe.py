@@ -50,9 +50,54 @@ def validate_user_character(user_input):
         return False
     return True
 
+PLAYER_PICK = user_start_character()
+COMPUTER_PICK = computer_start_character(PLAYER_PICK)
+
+def computer_strategy(all_options, marker_1, marker_2):
+    # this works as offense or defense depending what position, computer_pick
+    # or player_pick is passed in as an argument
+    return [cell for option_list in all_options
+                            if option_list.count(marker_1) == 2
+                            and option_list.count(marker_2) == 0
+                            for cell in option_list
+                            if isinstance(cell, int)]
+
+def computer_selects_cell(internal_board, remaining_options):
+    # columns = [list(col) for col in zip(*remaining_options)]
+
+    columns = [
+        [remaining_options[i][j] for i in range(3)]
+                                 for j in range(3)]
+    diagonals = [
+        [remaining_options[i][i] for i in range(3)],
+        [remaining_options[i][2 - i] for i in range(3)]
+    ]
+
+    rows = remaining_options
+    offense_and_defense_options = rows + columns + diagonals
+
+    computer_offensive_options = computer_strategy(offense_and_defense_options,
+                                                    COMPUTER_PICK, PLAYER_PICK)
+
+    if len(computer_offensive_options) > 0:
+        return choice(computer_offensive_options)
+
+    computer_defensive_options = computer_strategy(offense_and_defense_options,
+                                                    PLAYER_PICK, COMPUTER_PICK)
+
+    if len(computer_defensive_options) > 0:
+        return choice(computer_defensive_options)
+
+    list_of_open_cells = list(internal_board.keys())
+
+    if 5 in list_of_open_cells:
+        return 5
+
+    return choice(list_of_open_cells)
+
 def select_cell(internal_board, remaining_options, current_player):
     if current_player == 'Computer':
-        return choice(list(internal_board.keys()))
+        return computer_selects_cell(internal_board, remaining_options)
 
     if remaining_options == [[1, 2, 3], [4, 5, 6], [7, 8, 9]]:
         PRINT(MESSAGES['available_board_options'])
@@ -79,7 +124,7 @@ def update_board(display_board, list_coordinates, display_options_remaining,
                  marker):
     x, y = list_coordinates
     display_board[x][y] = marker
-    display_options_remaining[x][y] = '-'
+    display_options_remaining[x][y] = marker
 
 def check_round_winner(board, marker, current_player):
     # row winner
@@ -133,7 +178,6 @@ def update_score(score):
 def initial_game_state():
 
     board_options = [[i + j * 3 for i in range(1, 4)] for j in range(3)]
-    # board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
     internal_board = {
         1: [0, 0], # top left
@@ -254,12 +298,9 @@ def rounds_needed_to_win(total_rounds):
 
 def play_tic_tac_toe():
 
-    player_pick = user_start_character()
-    computer_pick = computer_start_character(player_pick)
-
     score_tracker = {"Player": 0, "Computer": 0}
 
-    rounds = 1
+    rounds = 3
     # you can changes "rounds" to any number, func below will
     # adapt to give proper amount of rounds needed to win
     rounds_to_win = rounds_needed_to_win(rounds)
@@ -268,7 +309,7 @@ def play_tic_tac_toe():
     while rounds > 0:
 
         display_board = create_board()
-        round_winner = play_round(display_board, player_pick, computer_pick)
+        round_winner = play_round(display_board, PLAYER_PICK, COMPUTER_PICK)
 
         if round_winner:
             rounds -= 1
