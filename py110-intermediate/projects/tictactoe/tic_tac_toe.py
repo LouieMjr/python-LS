@@ -132,7 +132,8 @@ def update_score(score):
 
 def initial_game_state():
 
-    board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    board_options = [[i + j * 3 for i in range(1, 4)] for j in range(3)]
+    # board_options = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
     internal_board = {
         1: [0, 0], # top left
@@ -236,7 +237,8 @@ def display_rules():
 
 def restart_game(msg = MESSAGES['restart']):
     PRINT(msg)
-    response = input()[0].upper()
+    response = input()
+    response = response[0].upper() + response[1:]
 
     if response in ['Yes', 'Y']:
         system('clear')
@@ -257,7 +259,7 @@ def play_tic_tac_toe():
 
     score_tracker = {"Player": 0, "Computer": 0}
 
-    rounds = 5
+    rounds = 1
     # you can changes "rounds" to any number, func below will
     # adapt to give proper amount of rounds needed to win
     rounds_to_win = rounds_needed_to_win(rounds)
