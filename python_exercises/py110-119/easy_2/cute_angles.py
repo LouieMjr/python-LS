@@ -81,6 +81,17 @@ def dms(number):
     MINUTES_SYMBOL = "'"
     SECONDS_SYMBOL = '\"'
 
+    full_circle = 360
+    if number < 0:
+        if number < -360:
+            number = full_circle - abs(number + full_circle)
+        else:
+            number = full_circle + number
+
+    if number > 360:
+        number = number - full_circle
+
+
     int_degrees = int(number)
     minutes = int((number - int_degrees) * MINUTES_PER_DEGREE)
     seconds = int((number - int_degrees - (minutes / MINUTES_PER_DEGREE)) *
@@ -89,8 +100,11 @@ def dms(number):
     minutes = add_zero(minutes)
     seconds = add_zero(seconds)
 
-    return f'{int_degrees}{DEGREE}{minutes}{MINUTES_SYMBOL}{seconds}{SECONDS_SYMBOL}'
+    msg = (f"{int_degrees}{DEGREE}"
+          f"{minutes}{MINUTES_SYMBOL}"
+          f"{seconds}{SECONDS_SYMBOL}")
 
+    return msg
     #
     # if type(number) == int:
     #     return f'{number}{DEGREE}00{MINUTES_SYMBOL}00{SECONDS_SYMBOL}'
@@ -109,8 +123,12 @@ def dms(number):
     #
     # return f'{degree}{DEGREE}{minutes}{MINUTES_SYMBOL}{seconds}{SECONDS_SYMBOL}'
 
-
+print(dms(-1) == "359°00'00\"")
+print(dms(400) == "40°00'00\"")
+print(dms(-40) == "320°00'00\"")
+print(dms(-420) == "300°00'00\"")
 print(dms(30) == "30°00'00\"")
+print(dms(-30) == "330°00'00\"")
 print(dms(76.73) == "76°43'48\"")
 print(dms(254.6) == "254°35'59\"")
 print(dms(93.034773) == "93°02'05\"")
