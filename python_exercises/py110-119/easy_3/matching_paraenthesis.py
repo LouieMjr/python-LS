@@ -19,25 +19,32 @@ potentially a dict
 list
 
 '''
+'''
+Further Exploration There are a few other characters that should be matching as
+well. Square brackets and curly brackets normally come in pairs. Quotation
+marks(single and double) also typically come in pairs and should be balanced.
+Can you expand this function to take into account those characters?
+'''
 
 def is_balanced(string):
 
-    if string.count('(') != string.count(')'):
-        return False
-
-    paren = {
-        '(': ')'
+    pairs = {
+        '(': ')',
+        '[': ']',
+        '{': '}',
     }
 
     balanced = []
 
     for c in string:
-        if c == '(':
-            balanced.append(paren[c])
-        if c == ')':
-            if len(balanced) > 0:
-                balanced.pop()
+        if pairs.get(c) is not None:
+            balanced.append(pairs[c])
 
+        if c == ')' or c == ']' or c == '}':
+
+            if len(balanced) == 0 or c != balanced[-1]:
+                return False
+            balanced.remove(c)
 
     if len(balanced) == 0:
         return True
@@ -45,6 +52,10 @@ def is_balanced(string):
     return False
 
 
+print(is_balanced('[{()}]') == True)
+print(is_balanced('[()()]{}') == True)
+print(is_balanced('([]') == False)
+print(is_balanced('([{]})') == False)
 print(is_balanced("What (is) this?") == True)        # True
 print(is_balanced("What is) this?") == False)        # True
 print(is_balanced("What (is this?") == False)        # True
