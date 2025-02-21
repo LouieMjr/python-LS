@@ -28,28 +28,23 @@ Can you expand this function to take into account those characters?
 
 def is_balanced(string):
 
+    stack = []
     pairs = {
         '(': ')',
         '[': ']',
         '{': '}',
     }
 
-    balanced = []
-
     for c in string:
         if pairs.get(c) is not None:
-            balanced.append(pairs[c])
+            stack.append(pairs[c])
 
-        if c == ')' or c == ']' or c == '}':
-
-            if len(balanced) == 0 or c != balanced[-1]:
+        if c in [')', ']', '}']:
+            if len(stack) == 0 or c != stack[-1]:
                 return False
-            balanced.remove(c)
+            stack.remove(c)
 
-    if len(balanced) == 0:
-        return True
-
-    return False
+    return len(stack) == 0
 
 
 print(is_balanced('[{()}]') == True)
