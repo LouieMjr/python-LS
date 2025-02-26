@@ -31,14 +31,42 @@ DECK = {
     },
 }
 
+SCORE = {
+    'Player': 0,
+    'Dealer': 0
+}
+
+# def player_cards(card):
+#     cards = []
+#     cards.append(card)
+#
+# def dealer_cards(card):
+#     cards = []
+#     cards.append(card)
+
+def remove_card_from_deck(suit, card):
+    del DECK[suit][card]
+
 def draw():
-    ALL_SUITS = list(DECK.keys())
-    SUIT = choice(ALL_SUITS)
-    CARD = choice(list(DECK[SUIT].keys()))
-    print(CARD)
+    all_suits = list(DECK.keys())
+    suit = choice(all_suits)
+    card = choice(list(DECK[suit].keys()))
+    remove_card_from_deck(suit, card)
+    return card
 
-def player_hit_or_stay():
-    draw()
+def player_hit_or_stay(msg = 'Player would you like to Hit or Stay? '):
+    response = input(msg)
+    response = response[0].upper() + response[1:]
+    print(response)
+    if response == 'Hit':
+        card = draw()
+        print(card)
+        SCORE['Player'] += card
+        print(SCORE['Player'])
+    else:
+        return player_hit_or_stay('Please Enter hit or stay: ')
 
+def twenty_one_gameplay():
+    player_hit_or_stay()
 
-player_hit_or_stay()
+twenty_one_gameplay()
