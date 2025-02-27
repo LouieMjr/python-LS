@@ -46,14 +46,6 @@ def determine_ace_value(ace, player):
 
     return one if current_score + eleven > 21 else eleven
 
-# def player_cards(card):
-#     cards = []
-#     cards.append(card)
-#
-# def dealer_cards(card):
-#     cards = []
-#     cards.append(card)
-
 def remove_suits_without_cards(suits):
     for suit in suits:
         if DECK.get(suit) == {}:
@@ -83,7 +75,6 @@ def draw():
     print(card_key, 'cardkey')
     card = get_card_value(card_key, suit)
 
-
     remove_card_from_deck(suit, card_key)
     return card
 
@@ -101,6 +92,24 @@ def score_over_twenty_one(score):
         return True
     return False
 
+def determine_winner():
+    user_score = SCORE['User']
+    dealer_score = SCORE['Dealer']
+
+    if dealer_score == user_score:
+        return [user_score, dealer_score, 'Tie game!']
+    elif user_score > dealer_score:
+        return [user_score, dealer_score, 'Player wins!']
+    else:
+        return [user_score, dealer_score, 'Dealer wins!']
+
+def display_winner(game_info):
+    user_score, dealer_score, winner = game_info
+    print(f'{winner} Score is {user_score} to {dealer_score}')
+
+    # print(f'{winner} {user_score} to {dealer_score}')
+    # return
+
 def play_twenty_one():
     user_turn = True
 
@@ -117,9 +126,16 @@ def play_twenty_one():
             card_value = draw()
             SCORE['Dealer'] += card_value
             print(SCORE['Dealer'], 'dealer score')
-            if score_over_twenty_one(SCORE['User']):
+            if score_over_twenty_one(SCORE['Dealer']):
                 return 'Dealer Busts. You win'
 
         user_turn = not user_turn
 
-play_twenty_one()
+    game_info = determine_winner()
+    print(game_info)
+    display_winner(game_info)
+
+def initialize_game():
+    print(play_twenty_one())
+
+initialize_game()
