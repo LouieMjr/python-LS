@@ -70,27 +70,49 @@ def draw():
     remaining_suits = remove_suits_without_cards(all_suits)
     suit = choice(remaining_suits)
 
-    print(suit, list(DECK[suit].keys()))
     card_key = choice(list(DECK[suit].keys()))
-    print(card_key, 'cardkey')
     card = get_card_value(card_key, suit)
 
     remove_card_from_deck(suit, card_key)
     return card
 
-def player_hit_or_stay(msg = 'Player would you like to Hit or Stay? '):
+def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? '):
     response = input(msg)
     response = response[0].upper() + response[1:]
 
     if response in ('Hit', 'H'):
         return draw()
+    if response in ('Stay', 'S'):
+        return 0
 
-    return player_hit_or_stay('Please Enter hit or stay: ')
+    return player_hit_or_stay('Please Enter (hit/h) or (stay/s): ')
+
+def dealer_hit_under_17():
+    TARGET = 17
+    dealer_score = SCORE['Dealer']
+
+    if dealer_score < TARGET:
+        return draw()
+
+    return 0
 
 def score_over_twenty_one(score):
     if score > 21:
         return True
     return False
+
+def update_score(user_turn, card_value):
+
+    if user_turn:
+        SCORE['User'] += card_value
+        return
+
+    SCORE['Dealer'] += card_value
+    return
+
+def check_for_stay(card_value, stays):
+    if card_value == 0:
+        stays.append(True)
 
 def determine_winner():
     user_score = SCORE['User']
@@ -105,35 +127,39 @@ def determine_winner():
 
 def display_winner(game_info):
     user_score, dealer_score, winner = game_info
-    print(f'{winner} Score is {user_score} to {dealer_score}')
-
-    # print(f'{winner} {user_score} to {dealer_score}')
-    # return
+    return f'{winner} With a score of {user_score} to {dealer_score}'
 
 def play_twenty_one():
-    user_turn = True
 
     while SCORE['User'] < 21 and SCORE['Dealer'] < 21:
-        if user_turn:
-            card_value = player_hit_or_stay()
 
-            SCORE['User'] += card_value
+            user_turn = True
+            two_stays_in_same_turn = []
+
+            card_value = player_hit_or_stay()
+            check_for_stay(card_value, two_stays_in_same_turn)
+            update_score(user_turn, card_value)
+            user_turn = not user_turn
+
             print(SCORE['User'], 'human score')
+
             if score_over_twenty_one(SCORE['User']):
                 return 'You Bust. Dealer wins'
 
-        else:
-            card_value = draw()
-            SCORE['Dealer'] += card_value
+            card_value = dealer_hit_under_17()
+            check_for_stay(card_value, two_stays_in_same_turn)
+            update_score(user_turn, card_value)
+
             print(SCORE['Dealer'], 'dealer score')
+            print(two_stays_in_same_turn, 'how many stays')
             if score_over_twenty_one(SCORE['Dealer']):
                 return 'Dealer Busts. You win'
 
-        user_turn = not user_turn
+            if len(two_stays_in_same_turn) == 2:
+                break
 
     game_info = determine_winner()
-    print(game_info)
-    display_winner(game_info)
+    print(display_winner(game_info))
 
 def initialize_game():
     print(play_twenty_one())
