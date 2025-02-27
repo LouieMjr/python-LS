@@ -36,6 +36,9 @@ SCORE = {
     'Dealer': 0
 }
 
+def update_ace_list(ace):
+    return
+
 def determine_ace_value(ace, player):
     one = ace[0]
     eleven = ace[1]
@@ -77,7 +80,9 @@ def draw():
 
     print(suit, list(DECK[suit].keys()))
     card_key = choice(list(DECK[suit].keys()))
+    print(card_key, 'cardkey')
     card = get_card_value(card_key, suit)
+
 
     remove_card_from_deck(suit, card_key)
     return card
@@ -87,17 +92,34 @@ def player_hit_or_stay(msg = 'Player would you like to Hit or Stay? '):
     response = response[0].upper() + response[1:]
 
     if response in ('Hit', 'H'):
-        card = draw()
-        print(card)
-        SCORE['User'] += card
-        print(SCORE['User'])
-    else:
-        return player_hit_or_stay('Please Enter hit or stay: ')
+        return draw()
+
+    return player_hit_or_stay('Please Enter hit or stay: ')
+
+def score_over_twenty_one(score):
+    if score > 21:
+        return True
+    return False
 
 def play_twenty_one():
-    while SCORE['User'] < 100:
-        player_hit_or_stay()
+    user_turn = True
 
-    print('score over 100')
+    while SCORE['User'] < 21 and SCORE['Dealer'] < 21:
+        if user_turn:
+            card_value = player_hit_or_stay()
+
+            SCORE['User'] += card_value
+            print(SCORE['User'], 'human score')
+            if score_over_twenty_one(SCORE['User']):
+                return 'You Bust. Dealer wins'
+
+        else:
+            card_value = draw()
+            SCORE['Dealer'] += card_value
+            print(SCORE['Dealer'], 'dealer score')
+            if score_over_twenty_one(SCORE['User']):
+                return 'Dealer Busts. You win'
+
+        user_turn = not user_turn
 
 play_twenty_one()
