@@ -116,16 +116,17 @@ def draw_card():
     remove_card_from_deck(suit, card_key, card)
     return card
 
-def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? '):
+def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
+                       time = 1):
+    sleep(time)
     response = input(msg)
-    response = response[0].upper() + response[1:]
     system('clear')
-    if response in ('Hit', 'H'):
+    if response in ('Hit', 'H', 'hit', 'h'):
         return draw_card()
-    if response in ('Stay', 'S'):
+    if response in ('Stay', 'S', 'stay', 's'):
         return 0
 
-    return player_hit_or_stay('Please Enter (hit/h) or (stay/s): ')
+    return player_hit_or_stay('Please Enter (hit/h) or (stay/s): ', 0)
 
 def dealer_hit_under_17():
     target = 17
@@ -154,11 +155,12 @@ def display_current_card(card, player_turn):
     player = None
     if card > 1:
         if player_turn:
-           player = 'You'
+            player = 'You'
         else:
             player = 'Dealer'
 
         return f'{player} drew a {card}.\n'
+    return ''
 
 def check_for_stay(card_value, stays):
     if card_value == 0:
