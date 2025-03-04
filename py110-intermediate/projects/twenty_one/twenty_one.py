@@ -1,7 +1,7 @@
 from random import choice
 from os import system
 from time import sleep
-
+import json
 
 DECK = {
     'Hearts': {
@@ -38,6 +38,39 @@ SCORE = {
     'User': 0,
     'Dealer': 0
 }
+
+with open('./game_messages.json', encoding="utf-8") as file:
+    MESSAGES = json.load(file)
+
+def remove_end_of_line_empty_spaces(message):
+    msg = message.split(' ')
+    msg[-1] = ''
+    message = ' '.join(msg)
+
+    return message
+
+def add_newlines_to_msgs(messages):
+    for key in messages:
+
+        new_message = ''
+        multiple_of_80 = 1
+        message_list = messages[key].split(' ')
+
+        for word in message_list:
+            new_message += word + ' '
+
+            if len(new_message) > 80 * multiple_of_80:
+
+                if new_message[-1] == ' ':
+                    new_message = remove_end_of_line_empty_spaces(new_message)
+
+                new_message += '\n'
+                multiple_of_80 += 1
+
+        messages[key] = new_message
+    return messages
+
+MESSAGES = add_newlines_to_msgs(MESSAGES)
 
 def determine_ace_value(ace_values, player_turn):
     one = ace_values[0]
@@ -191,7 +224,13 @@ def play_twenty_one():
     game_info = determine_winner()
     return display_winner(game_info)
 
+def how_to_play():
+    goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
+    print(f'{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n')
+
+
 def initialize_game():
+    how_to_play()
     print(play_twenty_one())
 
 initialize_game()
