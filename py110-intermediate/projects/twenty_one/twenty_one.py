@@ -162,16 +162,31 @@ def update_score(user_turn, card_value):
     SCORE['Dealer'] += sum(card_value)
     return
 
-def display_current_card(card, player_turn):
+def prepare_card_message(cards, player_turn):
     player = None
-    if card > 1:
+    if not cards:
+        return ''
+
+    card1 = cards[0]
+    msg = ''
+
+    if card1 != 0:
         if player_turn:
             player = 'You'
         else:
             player = 'Dealer'
+            return f'{player} drew {card1} and an unknown card.\n'
 
-        return f'{player} drew a {card}.\n'
-    return ''
+    drew = 'drew an' if isinstance(card1, str) or card1 < 10 else 'drew a'
+    msg = f'{player} {drew} {card1}.\n'
+
+    if len(cards) == 2:
+        _, card2 = cards
+        period = msg.find('.')
+
+        msg = f'{msg[:period]} and {card2}{msg[period:]}'
+
+    return msg
 
 def check_for_stay(card_value, stays):
     if 0 in card_value:
