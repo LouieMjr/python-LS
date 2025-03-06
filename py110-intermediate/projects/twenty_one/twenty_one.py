@@ -154,12 +154,12 @@ def score_over_twenty_one(score):
     return False
 
 def update_score(user_turn, card_value):
-
+    print('in update score', card_value)
     if user_turn:
-        SCORE['User'] += card_value
+        SCORE['User'] += sum(card_value)
         return
 
-    SCORE['Dealer'] += card_value
+    SCORE['Dealer'] += sum(card_value)
     return
 
 def display_current_card(card, player_turn):
@@ -174,7 +174,7 @@ def display_current_card(card, player_turn):
     return ''
 
 def check_for_stay(card_value, stays):
-    if card_value == 0:
+    if 0 in card_value:
         stays.append(True)
 
 def determine_winner():
