@@ -210,8 +210,20 @@ def determine_winner():
     return [user_score, dealer_score, 'Dealer wins!']
 
 def display_winner(game_info):
+    if isinstance(game_info, str):
+        return game_info
+
     user_score, dealer_score, winner = game_info
-    print(f'{winner} With a score of {user_score} to {dealer_score}')
+    return f'{winner} With a score of {user_score} to {dealer_score}'
+
+def filter_card_list(cards):
+    card_keys = []
+    for i in range(len(cards)):
+        if i % 2 == 0 and cards[i] != 0:
+            removed_key = cards.pop(i)
+            card_keys.append(removed_key)
+
+    return card_keys
 
 def play_twenty_one():
 
