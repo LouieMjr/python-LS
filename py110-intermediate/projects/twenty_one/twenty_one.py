@@ -39,6 +39,8 @@ SCORE = {
     'Dealer': 0
 }
 
+BEGINNING_OF_GAME = True
+
 with open('./game_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
 
@@ -106,15 +108,24 @@ def get_card_value(card_key, suit):
     return card_value
 
 def draw_card():
-    all_suits = list(DECK.keys())
-    remaining_suits = remove_suits_without_cards(all_suits)
-    suit = choice(remaining_suits)
+    draw_amount = 2 if BEGINNING_OF_GAME else 1
+    cards = []
 
-    card_key = choice(list(DECK[suit].keys()))
-    card = get_card_value(card_key, suit)
+    while draw_amount > 0:
 
-    remove_card_from_deck(suit, card_key, card)
-    return card
+        all_suits = list(DECK.keys())
+        remaining_suits = remove_suits_without_cards(all_suits)
+        suit = choice(remaining_suits)
+
+        card_key = choice(list(DECK[suit].keys()))
+        cards.append(card_key)
+        card = get_card_value(card_key, suit)
+        cards.append(card)
+
+        remove_card_from_deck(suit, card_key, card)
+        draw_amount -= 1
+
+    return cards
 
 def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
                        time = 1):
@@ -124,7 +135,7 @@ def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
     if response in ('Hit', 'H', 'hit', 'h'):
         return draw_card()
     if response in ('Stay', 'S', 'stay', 's'):
-        return 0
+        return [0]
 
     return player_hit_or_stay('Please Enter (hit/h) or (stay/s): ', 0)
 
@@ -135,7 +146,7 @@ def dealer_hit_under_17():
     if dealer_score < target:
         return draw_card()
 
-    return 0
+    return [0]
 
 def score_over_twenty_one(score):
     if score > 21:
