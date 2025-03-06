@@ -162,6 +162,12 @@ def update_score(user_turn, card_value):
     SCORE['Dealer'] += sum(card_value)
     return
 
+def starts_with_vowel(card):
+    if isinstance(card, str):
+        if card[0] in 'aeiouAEIOU':
+            return True
+    return False
+
 def prepare_card_message(cards, player_turn):
     player = None
     if not cards:
@@ -177,7 +183,7 @@ def prepare_card_message(cards, player_turn):
             player = 'Dealer'
             return f'{player} drew {card1} and an unknown card.\n'
 
-    drew = 'drew an' if isinstance(card1, str) or card1 < 10 else 'drew a'
+    drew = 'drew an' if starts_with_vowel(card1) or card1 == 8 else 'drew a'
     msg = f'{player} {drew} {card1}.\n'
 
     if len(cards) == 2:
