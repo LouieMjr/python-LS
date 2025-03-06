@@ -226,6 +226,7 @@ def filter_card_list(cards):
     return card_keys
 
 def play_twenty_one():
+    global BEGINNING_OF_GAME
 
     while SCORE['User'] < 21 and SCORE['Dealer'] < 21:
 
@@ -233,10 +234,14 @@ def play_twenty_one():
         user_turn = SCORE['User_turn']
         two_stays_in_same_turn = []
 
-        card_value = player_hit_or_stay()
-        display_card = display_current_card(card_value, SCORE['User_turn'])
-        check_for_stay(card_value, two_stays_in_same_turn)
-        update_score(user_turn, card_value)
+        card_list = player_hit_or_stay()
+        card_keys = filter_card_list(card_list)
+        card_values = card_list
+        print(card_values, card_keys, 'values, then keys')
+        display_card = prepare_card_message(card_keys, SCORE['User_turn'])
+        check_for_stay(card_values, two_stays_in_same_turn)
+        print(card_values, 'before going into update score')
+        update_score(user_turn, card_values)
 
         user_turn = not user_turn
         SCORE['User_turn'] = user_turn
@@ -247,14 +252,23 @@ def play_twenty_one():
         ))
 
         if score_over_twenty_one(SCORE['User']):
-            return "That's Bust. Dealer wins!"
+            return "That's a Bust. Dealer wins!"
 
         sleep(1)
 
-        card_value = dealer_hit_under_17()
-        display_card = display_current_card(card_value, SCORE['User_turn'])
-        check_for_stay(card_value, two_stays_in_same_turn)
-        update_score(user_turn, card_value)
+        card_list = dealer_hit_under_17()
+        print(card_list, 'before filter')
+        card_keys = filter_card_list(card_list)
+        print(
+            card_list, card_keys, 'values', 'keys - after players draws'
+            ,'before dealer draws')
+        card_values = card_list
+
+        BEGINNING_OF_GAME = False
+
+        display_card = prepare_card_message(card_keys, SCORE['User_turn'])
+        check_for_stay(card_values, two_stays_in_same_turn)
+        update_score(user_turn, card_values)
 
         print((
             f'{display_card}'
@@ -267,8 +281,8 @@ def play_twenty_one():
         if len(two_stays_in_same_turn) == 2:
             break
 
-    game_info = determine_winner()
-    return display_winner(game_info)
+    results = determine_winner()
+    return results
 
 def how_to_play():
     goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
@@ -277,6 +291,7 @@ def how_to_play():
 
 def initialize_game():
     how_to_play()
-    print(play_twenty_one())
+    game_results = play_twenty_one()
+    return display_winner(game_results)
 
-initialize_game()
+print(initialize_game())
