@@ -218,10 +218,16 @@ def display_winner(game_info):
 
 def filter_card_list(cards):
     card_keys = []
+
     for i in range(len(cards)):
         if i % 2 == 0 and cards[i] != 0:
-            removed_key = cards.pop(i)
-            card_keys.append(removed_key)
+            key = cards[i]
+            card_keys.append(key)
+
+    for card in cards:
+        if card in card_keys:
+            cards.remove(card)
+
 
     return card_keys
 
