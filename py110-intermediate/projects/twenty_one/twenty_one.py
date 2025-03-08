@@ -1,6 +1,7 @@
 from random import choice
 from os import system
 from time import sleep
+import re
 import json
 
 DECK = {
@@ -40,6 +41,7 @@ SCORE = {
 }
 
 BEGINNING_OF_GAME = True
+HIDDEN_DEALER_CARD = 0
 
 with open('./game_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
@@ -154,7 +156,6 @@ def score_over_twenty_one(score):
     return False
 
 def update_score(user_turn, card_value):
-    print('in update score', card_value)
     if user_turn:
         SCORE['User'] += sum(card_value)
         return
@@ -168,31 +169,35 @@ def starts_with_vowel(card):
             return True
     return False
 
-def prepare_card_message(cards, player_turn):
-    player = None
-    if not cards:
-        return ''
+def prepare_card_message(card_keys, player_turn, current_msg):
+    if not card_keys:
+        return current_msg
 
-    card1 = cards[0]
-    msg = ''
+    global HIDDEN_DEALER_CARD
+    player = ''
+    drew = ''
 
-    if card1 != 0:
+    if len(card_keys) == 2:
+        drew = ('drew an' if starts_with_vowel(card_keys[0])
+                          or card_keys[0] == 8 else 'drew a')
         if player_turn:
             player = 'You'
         else:
             player = 'Dealer'
-            return f'{player} drew {card1} and an unknown card.\n'
+            HIDDEN_DEALER_CARD = card_keys[1]
+            card_keys[1] = 'and an unknown card'
 
-    drew = 'drew an' if starts_with_vowel(card1) or card1 == 8 else 'drew a'
-    msg = f'{player} {drew} {card1}.\n'
+        current_msg += f'{player} {drew} {card_keys[0]}, {card_keys[1]}'
+    else:
+        phrase = ' and an unknown card'
+        if phrase in current_msg:
+            current_msg = re.sub(phrase, f' {card_keys[0]}', current_msg)
+            current_msg += phrase
+            return current_msg
 
-    if len(cards) == 2:
-        _, card2 = cards
-        period = msg.find('.')
+        current_msg += f', {card_keys[0]}'
 
-        msg = f'{msg[:period]} and {card2}{msg[period:]}'
-
-    return msg
+    return current_msg
 
 def check_for_stay(card_value, stays):
     if 0 in card_value:
@@ -224,15 +229,17 @@ def filter_card_list(cards):
             key = cards[i]
             card_keys.append(key)
 
+
     for card in cards:
         if card in card_keys:
             cards.remove(card)
-
 
     return card_keys
 
 def play_twenty_one():
     global BEGINNING_OF_GAME
+    show_users_cards = ''
+    show_dealers_cards = ''
 
     while SCORE['User'] < 21 and SCORE['Dealer'] < 21:
 
@@ -240,46 +247,41 @@ def play_twenty_one():
         user_turn = SCORE['User_turn']
         two_stays_in_same_turn = []
 
-        card_list = player_hit_or_stay()
-        card_keys = filter_card_list(card_list)
-        card_values = card_list
-        print(card_values, card_keys, 'values, then keys')
-        display_card = prepare_card_message(card_keys, SCORE['User_turn'])
+        card_keys_values = player_hit_or_stay()
+        card_keys = filter_card_list(card_keys_values)
+        card_values = card_keys_values
+        show_users_cards = prepare_card_message(card_keys, SCORE['User_turn'],
+                                                 show_users_cards)
+
         check_for_stay(card_values, two_stays_in_same_turn)
-        print(card_values, 'before going into update score')
         update_score(user_turn, card_values)
 
         user_turn = not user_turn
         SCORE['User_turn'] = user_turn
 
-        print((
-            f'{display_card}'
-            f'Your current total is: {SCORE['User']}\n'
-        ))
+        print(f'{show_users_cards}')
 
+        if SCORE['User'] == 21:
+            return ''
         if score_over_twenty_one(SCORE['User']):
             return "That's a Bust. Dealer wins!"
 
         sleep(1)
 
-        card_list = dealer_hit_under_17()
-        print(card_list, 'before filter')
-        card_keys = filter_card_list(card_list)
-        print(
-            card_list, card_keys, 'values', 'keys - after players draws'
-            ,'before dealer draws')
-        card_values = card_list
+        card_keys_values = dealer_hit_under_17()
+        card_keys = filter_card_list(card_keys_values)
+        card_values = card_keys_values
 
         BEGINNING_OF_GAME = False
 
-        display_card = prepare_card_message(card_keys, SCORE['User_turn'])
+        show_dealers_cards = prepare_card_message(card_keys,
+                                                  SCORE['User_turn'],
+                                                  show_dealers_cards)
+
         check_for_stay(card_values, two_stays_in_same_turn)
         update_score(user_turn, card_values)
 
-        print((
-            f'{display_card}'
-            f'Dealers current total is: {SCORE['Dealer']}\n'
-        ))
+        print(f'{show_dealers_cards}')
 
         if score_over_twenty_one(SCORE['Dealer']):
             return 'Dealer Busts. You win!'
