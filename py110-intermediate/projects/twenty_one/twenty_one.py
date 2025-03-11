@@ -35,16 +35,28 @@ DECK = {
     },
 }
 
-SCORE = {
-    'User': 0,
-    'Dealer': 0
+GAME_STATS = {
+    'User': {
+        'Score': 0,
+        'Cards': [],
+        'turn': True
+    },
+    'Dealer': {
+        'Score': 0,
+        'Cards': [],
+        'Hidden_card': 0
+    },
 }
 
 BEGINNING_OF_GAME = True
-HIDDEN_DEALER_CARD = 0
 
 with open('./game_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
+
+def typing_effect(message, time = 0.02):
+    for char in message:
+        print(char, end='', flush=True)
+        sleep(time)
 
 def remove_end_of_line_empty_spaces(message):
     msg = message.split(' ')
