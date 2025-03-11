@@ -186,125 +186,111 @@ def starts_with_vowel(card):
             return True
     return False
 
-def prepare_card_message(card_keys, player_turn, current_msg):
-    if not card_keys:
-        return current_msg
+def display_card_message(card_keys, player_turn):
 
-    global HIDDEN_DEALER_CARD
-    player = ''
-    drew = ''
+    player = 'User' if player_turn else 'Dealer'
+    cards = GAME_STATS[player]['Cards']
 
-    if len(card_keys) == 2:
-        drew = ('drew an' if starts_with_vowel(card_keys[0])
-                          or card_keys[0] == 8 else 'drew a')
-        if player_turn:
-            player = 'You'
+    drew = ('drew an' if starts_with_vowel(card_keys[0])
+                        or card_keys[0] == 8 else 'drew a')
+
+    card_msg = ''
+
+    for i, card in enumerate(cards):
+        if player == 'Dealer' and i == 1:
+            GAME_STATS[player]['Hidden_card'] = card
+            card_msg += 'and an unknown card'
+            continue
+        if player == 'Dealer' and i == 2:
+            card_msg += ', '
+        if i < len(cards) - 1:
+            card_msg += str(card) + ', '
         else:
-            player = 'Dealer'
-            HIDDEN_DEALER_CARD = card_keys[1]
-            card_keys[1] = 'and an unknown card'
+            card_msg += str(card)
 
-        current_msg += f'{player} {drew} {card_keys[0]}, {card_keys[1]}'
+    if player == 'User':
+        print(f'You {drew} {card_msg}')
     else:
-        phrase = ' and an unknown card'
-        if phrase in current_msg:
-            current_msg = re.sub(phrase, f' {card_keys[0]}', current_msg)
-            current_msg += phrase
-            return current_msg
+        phrase = ', and an unknown card'
+        if phrase in card_msg:
+            card_msg = re.sub(phrase, '', card_msg)
+            card_msg += phrase
 
-        current_msg += f', {card_keys[0]}'
+        print(f'{player} {drew} {card_msg}')
 
-    return current_msg
-
-def check_for_stay(card_value, stays):
+def check_for_stay(card_value, stays, current_player):
     if 0 in card_value:
-        stays.append(True)
+        stays.append(current_player)
 
 def determine_winner():
-    user_score = SCORE['User']
-    dealer_score = SCORE['Dealer']
+    user_score = GAME_STATS['User']['Score']
+    dealer_score = GAME_STATS['Dealer']['Score']
+
+    if score_over_twenty_one(user_score):
+        return "That's a Bust. Dealer wins!"
+
+    if score_over_twenty_one(dealer_score):
+        return 'Dealer Busts. You win!'
 
     if dealer_score == user_score:
-        return [user_score, dealer_score, 'Tie game!']
+        return 'Tie game!'
     if user_score > dealer_score:
-        return [user_score, dealer_score, 'Player wins!']
+        return 'You win!'
 
-    return [user_score, dealer_score, 'Dealer wins!']
+    return 'Dealer wins!'
 
-def display_winner(game_info):
-    if isinstance(game_info, str):
-        return game_info
+def display_winner(winner):
+    game_info = [[GAME_STATS[player][stat]] for player in GAME_STATS
+                                            for stat in GAME_STATS[player]
+                                            if stat != 'turn']
+    print(game_info)
+    hidden_card = ''
+    if 'Dealer wins!' in winner:
+        typing_effect('The dealers hidden card was\n')
+        for _ in range(2):
+            typing_effect('...', 0.50)
+            sleep(1)
 
-    user_score, dealer_score, winner = game_info
-    return f'{winner} With a score of {user_score} to {dealer_score}'
+        hidden_card = '\n' + str(GAME_STATS['Dealer']['Hidden_card']) + '\n'
 
-def filter_card_list(cards):
-    card_keys = []
-
-    for i in range(len(cards)):
-        if i % 2 == 0 and cards[i] != 0:
-            key = cards[i]
-            card_keys.append(key)
-
-
-    for card in cards:
-        if card in card_keys:
-            cards.remove(card)
-
-    return card_keys
+    # user_score, dealer_score, winner = game_info
+    return f'{hidden_card}{winner} With a score of to '
 
 def play_twenty_one():
     global BEGINNING_OF_GAME
-    show_users_cards = ''
-    show_dealers_cards = ''
+    two_stays = []
+    card_values = 0
 
-    while SCORE['User'] < 21 and SCORE['Dealer'] < 21:
+    while (GAME_STATS['User']['Score'] < 21 and
+           GAME_STATS['Dealer']['Score'] < 21):
 
-        SCORE['User_turn'] = True
-        user_turn = SCORE['User_turn']
-        two_stays_in_same_turn = []
+        if len(two_stays) == 2:
+            break
 
-        card_keys_values = player_hit_or_stay()
-        card_keys = filter_card_list(card_keys_values)
-        card_values = card_keys_values
-        show_users_cards = prepare_card_message(card_keys, SCORE['User_turn'],
-                                                 show_users_cards)
+        GAME_STATS['User']['turn'] = True
+        user_turn = GAME_STATS['User']['turn']
 
-        check_for_stay(card_values, two_stays_in_same_turn)
+        if 'User' not in two_stays:
+            card_values = player_hit_or_stay()
+            check_for_stay(card_values, two_stays, 'User')
+
+        card_keys = GAME_STATS['User']['Cards']
+        display_card_message(card_keys, user_turn)
         update_score(user_turn, card_values)
-
-        user_turn = not user_turn
-        SCORE['User_turn'] = user_turn
-
-        print(f'{show_users_cards}')
-
-        if SCORE['User'] == 21:
-            return ''
-        if score_over_twenty_one(SCORE['User']):
-            return "That's a Bust. Dealer wins!"
 
         sleep(1)
 
-        card_keys_values = dealer_hit_under_17()
-        card_keys = filter_card_list(card_keys_values)
-        card_values = card_keys_values
+        card_keys = GAME_STATS['Dealer']['Cards']
+        GAME_STATS['User']['turn'] = False
+        user_turn = GAME_STATS['User']['turn']
 
-        BEGINNING_OF_GAME = False
+        if 'Dealer' not in two_stays:
+            card_values = dealer_hit_under_17()
+            check_for_stay(card_values, two_stays, 'Dealer')
 
-        show_dealers_cards = prepare_card_message(card_keys,
-                                                  SCORE['User_turn'],
-                                                  show_dealers_cards)
-
-        check_for_stay(card_values, two_stays_in_same_turn)
+        display_card_message(card_keys, user_turn)
         update_score(user_turn, card_values)
-
-        print(f'{show_dealers_cards}')
-
-        if score_over_twenty_one(SCORE['Dealer']):
-            return 'Dealer Busts. You win!'
-
-        if len(two_stays_in_same_turn) == 2:
-            break
+        BEGINNING_OF_GAME = False
 
     results = determine_winner()
     return results
