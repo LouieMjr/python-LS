@@ -92,7 +92,8 @@ def determine_ace_value(ace_values, player_turn):
     one = ace_values[0]
     eleven = ace_values[1]
 
-    current_score = SCORE['User'] if player_turn else SCORE['Dealer']
+    current_score = (GAME_STATS['User']['Score']
+                     if player_turn else GAME_STATS['Dealer']['Score'])
 
     return one if current_score + eleven > 21 else eleven
 
@@ -118,26 +119,30 @@ def remove_card_from_deck(suit, card_key, card):
 def get_card_value(card_key, suit):
     card_value = DECK[suit][card_key]
     if card_key == 'Ace':
-        card_value = determine_ace_value(card_value, SCORE['User_turn'])
+        card_value = determine_ace_value(card_value,
+                                         GAME_STATS['User']['turn'])
     return card_value
 
 def draw_card():
-    draw_amount = 2 if BEGINNING_OF_GAME else 1
+    deal_amount = 2 if BEGINNING_OF_GAME else 1
     cards = []
+    current_turn = 'User' if GAME_STATS['User']['turn'] else 'Dealer'
 
-    while draw_amount > 0:
+    while deal_amount > 0:
 
         all_suits = list(DECK.keys())
         remaining_suits = remove_suits_without_cards(all_suits)
         suit = choice(remaining_suits)
 
         card_key = choice(list(DECK[suit].keys()))
-        cards.append(card_key)
-        card = get_card_value(card_key, suit)
-        cards.append(card)
+        GAME_STATS[current_turn]['Cards'].append(card_key)
 
-        remove_card_from_deck(suit, card_key, card)
-        draw_amount -= 1
+        print(f'\nWhat is {current_turn} list of cards:{GAME_STATS[current_turn]['Cards']}\n')
+        card_value = get_card_value(card_key, suit)
+        cards.append(card_value)
+
+        remove_card_from_deck(suit, card_key, card_value)
+        deal_amount -= 1
 
     return cards
 
@@ -155,7 +160,7 @@ def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
 
 def dealer_hit_under_17():
     target = 17
-    dealer_score = SCORE['Dealer']
+    dealer_score = GAME_STATS['Dealer']['Score']
 
     if dealer_score < target:
         return draw_card()
@@ -169,10 +174,10 @@ def score_over_twenty_one(score):
 
 def update_score(user_turn, card_value):
     if user_turn:
-        SCORE['User'] += sum(card_value)
+        GAME_STATS['User']['Score'] += sum(card_value)
         return
 
-    SCORE['Dealer'] += sum(card_value)
+    GAME_STATS['Dealer']['Score'] += sum(card_value)
     return
 
 def starts_with_vowel(card):
@@ -307,7 +312,6 @@ def play_twenty_one():
 def how_to_play():
     goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
     print(f'{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n')
-
 
 def initialize_game():
     how_to_play()
