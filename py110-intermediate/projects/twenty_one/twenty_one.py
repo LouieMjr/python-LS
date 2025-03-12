@@ -1,6 +1,7 @@
 from random import choice
 from os import system
 from time import sleep
+import sys
 import re
 import json
 
@@ -137,7 +138,6 @@ def draw_card():
         card_key = choice(list(DECK[suit].keys()))
         GAME_STATS[current_turn]['Cards'].append(card_key)
 
-        print(f'\nWhat is {current_turn} list of cards:{GAME_STATS[current_turn]['Cards']}\n')
         card_value = get_card_value(card_key, suit)
         cards.append(card_value)
 
@@ -166,11 +166,6 @@ def dealer_hit_under_17():
         return draw_card()
 
     return [0]
-
-def score_over_twenty_one(score):
-    if score > 21:
-        return True
-    return False
 
 def update_score(user_turn, card_value):
     if user_turn:
@@ -226,10 +221,11 @@ def determine_winner():
     user_score = GAME_STATS['User']['Score']
     dealer_score = GAME_STATS['Dealer']['Score']
 
-    if score_over_twenty_one(user_score):
+    if dealer_score > 21 and user_score > 21:
+        return 'Both of you bust. No winner!'
+    if user_score > 21:
         return "That's a Bust. Dealer wins!"
-
-    if score_over_twenty_one(dealer_score):
+    if dealer_score > 21:
         return 'Dealer Busts. You win!'
 
     if dealer_score == user_score:
