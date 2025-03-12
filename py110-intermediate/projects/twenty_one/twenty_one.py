@@ -281,12 +281,15 @@ def play_twenty_one():
         user_turn = GAME_STATS['User']['turn']
 
         if 'User' not in two_stays:
-            card_values = player_hit_or_stay()
-            check_for_stay(card_values, two_stays, 'User')
+            if BEGINNING_OF_GAME:
+                card_values = draw_card()
+            else:
+                card_values = player_hit_or_stay()
 
-        card_keys = GAME_STATS['User']['Cards']
-        display_card_message(card_keys, user_turn)
-        update_score(user_turn, card_values)
+            check_for_stay(card_values, two_stays, 'User')
+            card_keys = GAME_STATS['User']['Cards']
+            display_card_message(card_keys, user_turn)
+            update_score(user_turn, card_values)
 
         sleep(1)
 
