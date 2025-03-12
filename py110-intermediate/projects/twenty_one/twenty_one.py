@@ -50,6 +50,7 @@ GAME_STATS = {
 }
 
 BEGINNING_OF_GAME = True
+END_OF_GAME = 21
 
 with open('./game_messages.json', encoding="utf-8") as file:
     MESSAGES = json.load(file)
@@ -101,7 +102,7 @@ def determine_ace_value(ace_values, player_turn):
     current_score = (GAME_STATS['User']['Score']
                      if player_turn else GAME_STATS['Dealer']['Score'])
 
-    return one if current_score + eleven > 21 else eleven
+    return one if current_score + eleven > END_OF_GAME else eleven
 
 def remove_suits_without_cards(suits):
     for suit in suits:
@@ -225,11 +226,11 @@ def determine_winner():
     user_score = GAME_STATS['User']['Score']
     dealer_score = GAME_STATS['Dealer']['Score']
 
-    if dealer_score > 21 and user_score > 21:
+    if dealer_score > END_OF_GAME and user_score > END_OF_GAME:
         return 'Both of you bust. No winner!'
-    if user_score > 21:
+    if user_score > END_OF_GAME:
         return "That's a Bust. Dealer wins!"
-    if dealer_score > 21:
+    if dealer_score > END_OF_GAME:
         return 'Dealer Busts. You win!'
 
     if dealer_score == user_score:
@@ -271,8 +272,8 @@ def play_twenty_one():
     two_stays = []
     card_values = 0
 
-    while (GAME_STATS['User']['Score'] < 21 and
-           GAME_STATS['Dealer']['Score'] < 21):
+    while (GAME_STATS['User']['Score'] < END_OF_GAME and
+           GAME_STATS['Dealer']['Score'] < END_OF_GAME):
 
         if len(two_stays) == 2:
             break
