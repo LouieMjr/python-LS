@@ -252,18 +252,19 @@ def display_winner(winner):
     game_info = [[GAME_STATS[player][stat]] for player in GAME_STATS
                                             for stat in GAME_STATS[player]
                                             if stat != 'turn']
-    print(game_info)
-    hidden_card = ''
-    if 'Dealer wins!' in winner:
-        typing_effect('The dealers hidden card was\n')
-        for _ in range(2):
-            typing_effect('...', 0.50)
-            sleep(1)
 
-        hidden_card = '\n' + str(GAME_STATS['Dealer']['Hidden_card']) + '\n'
+    player_score, _, dealer_score, _, dealer_hidden_card = game_info
 
-    # user_score, dealer_score, winner = game_info
-    return f'{hidden_card}{winner} With a score of to '
+    hidden_card_msg = ''
+
+    card = dealer_hidden_card[0]
+    hidden_card_msg = f'{starts_with_vowel(card)}: {dealer_hidden_card[0]}'
+
+    msg = (f'{winner} The score was '
+           f'{player_score[0]} to {dealer_score[0]}.')
+
+    display_hidden_card()
+    print(f'{typing_effect(hidden_card_msg, 0.06)}\n{msg} ')
 
 def play_twenty_one():
     global BEGINNING_OF_GAME
