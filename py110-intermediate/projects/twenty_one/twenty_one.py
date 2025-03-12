@@ -58,6 +58,11 @@ def typing_effect(message, time = 0.02):
     for char in message:
         print(char, end='', flush=True)
         sleep(time)
+        if char == ',':
+            sleep(0.10)
+        if char == '.':
+            sleep(0.70)
+    return '\n'
 
 def remove_end_of_line_empty_spaces(message):
     msg = message.split(' ')
