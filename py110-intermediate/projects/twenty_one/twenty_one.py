@@ -246,7 +246,7 @@ def display_hidden_card():
         sleep(0.2)
         sys.stdout.write("\033[3D") # Move cursor back 3 positions
         sys.stdout.write("\033[0K") # Clear from cursor position to end of line
-        sys.stdout.flush() # forces output but for this case it will work without
+        sys.stdout.flush() # forces output. For this case it could work without
 
 def display_winner(winner):
     game_info = [[GAME_STATS[player][stat]] for player in GAME_STATS
@@ -312,9 +312,9 @@ def how_to_play():
     goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
     msg = (f"{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n\n"
            f"Here we go. We're going to deal you your first two cards!\n\n")
-    # typing_effect(msg)
-    # sleep(1)
-    # system('clear')
+    typing_effect(msg)
+    sleep(1)
+    system('clear')
 
 def initialize_game():
     # if you dont want to wait for rules of the game to display
