@@ -182,17 +182,16 @@ def update_score(user_turn, card_value):
 
 def starts_with_vowel(card):
     if isinstance(card, str):
-        if card[0] in 'aeiouAEIOU':
-            return True
-    return False
+        if card[0] in 'aeiouAEIOU' or card[0] == 8:
+            return 'an'
+    return 'a'
 
 def display_card_message(card_keys, player_turn):
 
     player = 'User' if player_turn else 'Dealer'
     cards = GAME_STATS[player]['Cards']
 
-    drew = ('drew an' if starts_with_vowel(card_keys[0])
-                        or card_keys[0] == 8 else 'drew a')
+    drew = f'drew {starts_with_vowel(card_keys[0])}'
 
     card_msg = ''
 
@@ -209,14 +208,14 @@ def display_card_message(card_keys, player_turn):
             card_msg += str(card)
 
     if player == 'User':
-        print(f'You {drew} {card_msg}')
+        print(f'You {drew} {card_msg}\n')
     else:
         phrase = ', and an unknown card'
         if phrase in card_msg:
             card_msg = re.sub(phrase, '', card_msg)
             card_msg += phrase
 
-        print(f'{player} {drew} {card_msg}')
+        print(f'{player} {drew} {card_msg}\n')
 
 def check_for_stay(card_value, stays, current_player):
     if 0 in card_value:
@@ -239,6 +238,15 @@ def determine_winner():
         return 'You win!'
 
     return 'Dealer wins!'
+
+def display_hidden_card():
+    typing_effect('The dealers hidden card was ')
+    for _ in range(3):
+        typing_effect('...', 0.10)
+        sleep(0.2)
+        sys.stdout.write("\033[3D") # Move cursor back 3 positions
+        sys.stdout.write("\033[0K") # Clear from cursor position to end of line
+        sys.stdout.flush() # forces output but for this case it will work without
 
 def display_winner(winner):
     game_info = [[GAME_STATS[player][stat]] for player in GAME_STATS
