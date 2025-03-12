@@ -310,11 +310,17 @@ def play_twenty_one():
 
 def how_to_play():
     goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
-    print(f'{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n')
+    msg = (f"{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n\n"
+           f"Here we go. We're going to deal you your first two cards!\n\n")
+    # typing_effect(msg)
+    # sleep(1)
+    # system('clear')
 
 def initialize_game():
+    # if you dont want to wait for rules of the game to display
+    # comment out line below
     how_to_play()
     game_results = play_twenty_one()
-    return display_winner(game_results)
+    display_winner(game_results)
 
-print(initialize_game())
+initialize_game()
