@@ -392,7 +392,7 @@ def start_game():
 def initialize_game():
     # if you dont want to wait for rules of the game to display
     # comment out line below
-    # how_to_play()
+    how_to_play()
     start_game()
 
 initialize_game()
