@@ -243,7 +243,7 @@ def determine_winner():
 def display_hidden_card():
     typing_effect('The dealers hidden card was ')
     for _ in range(3):
-        typing_effect('...', 0.10)
+        typing_effect('...', 0.08)
         sleep(0.2)
         sys.stdout.write("\033[3D") # Move cursor back 3 positions
         sys.stdout.write("\033[0K") # Clear from cursor position to end of line
@@ -265,9 +265,13 @@ def display_winner(winner):
            f'{player_score[0]} to {dealer_score[0]}.')
 
     display_hidden_card()
-    print(f'{typing_effect(hidden_card_msg, 0.06)}\n{msg} ')
+    print(f'{typing_effect(hidden_card_msg, 0.06)}\n{msg} \n')
 
 def play_twenty_one():
+    system('clear')
+    msg = "Here we go. We're going to deal you your first two cards!\n\n"
+    typing_effect(msg)
+
     global BEGINNING_OF_GAME
     two_stays = []
     card_values = 0
@@ -302,8 +306,8 @@ def play_twenty_one():
             card_values = dealer_hit_under_17()
             check_for_stay(card_values, two_stays, 'Dealer')
 
-        display_card_message(card_keys, user_turn)
-        update_score(user_turn, card_values)
+            display_card_message(card_keys, user_turn)
+            update_score(user_turn, card_values)
         BEGINNING_OF_GAME = False
 
     results = determine_winner()
@@ -311,17 +315,84 @@ def play_twenty_one():
 
 def how_to_play():
     goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
-    msg = (f"{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n\n"
-           f"Here we go. We're going to deal you your first two cards!\n\n")
+    msg = (f"{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n\n")
     typing_effect(msg)
     sleep(1)
     system('clear')
 
+def restart_game(msg = 'Do you want to play again?'):
+    typing_effect(msg)
+    typing_effect('\nEnter yes/y or no/n: ')
+    response = input()
+    if response in ('Yes', 'Y', 'yes', 'y'):
+        reset_game_obj()
+        return start_game()
+    if response in ('No', 'N', 'no', 'n'):
+        return typing_effect('\nThank you for playing!\n')
+    system('clear')
+    return restart_game('That input is not valid.')
+
+def reset_game_obj():
+    global BEGINNING_OF_GAME
+    global DECK
+    global GAME_STATS
+
+    BEGINNING_OF_GAME = True
+
+    DECK = {
+        'Hearts': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Diamonds': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Clubs': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Spades': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+    }
+
+    GAME_STATS = {
+        'User': {
+            'Score': 0,
+            'Cards': [],
+            'turn': True
+        },
+        'Dealer': {
+            'Score': 0,
+            'Cards': [],
+            'Hidden_card': 0
+        },
+    }
+
+
+def start_game():
+    game_results = play_twenty_one()
+    display_winner(game_results)
+    restart_game()
+
 def initialize_game():
     # if you dont want to wait for rules of the game to display
     # comment out line below
-    how_to_play()
-    game_results = play_twenty_one()
-    display_winner(game_results)
+    # how_to_play()
+    start_game()
 
 initialize_game()
