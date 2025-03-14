@@ -72,7 +72,7 @@ def remove_end_of_line_empty_spaces(message):
 
     return message
 
-# makes sure the messages from the json file or no longer than 80 lines
+# makes sure the messages from the json file are no longer than 80 lines
 def add_newlines_to_msgs(messages):
     for key in messages:
 
@@ -243,7 +243,7 @@ def determine_winner():
 
     return 'Dealer wins!'
 
-# cool loading effect before display dealers hidden card
+# cool loading effect before displaying dealers hidden card
 def display_hidden_card():
     typing_effect('The dealers hidden card was ')
     for _ in range(3):
@@ -312,7 +312,7 @@ def play_twenty_one():
 
             display_card_message(card_keys, user_turn)
             update_score(user_turn, card_values)
-        BEGINNING_OF_GAME = False
+            BEGINNING_OF_GAME = False
 
     results = determine_winner()
     return results
