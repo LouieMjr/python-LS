@@ -72,6 +72,7 @@ def remove_end_of_line_empty_spaces(message):
 
     return message
 
+# makes sure the messages from the json file or no longer than 80 lines
 def add_newlines_to_msgs(messages):
     for key in messages:
 
@@ -182,6 +183,7 @@ def update_score(user_turn, card_value):
     GAME_STATS['Dealer']['Score'] += sum(card_value)
     return
 
+# uses correct word (a or an) before card depending if card starts with vowel
 def starts_with_vowel(card):
     if isinstance(card, str):
         if card[0] in 'aeiouAEIOU' or card[0] == 8:
@@ -241,6 +243,7 @@ def determine_winner():
 
     return 'Dealer wins!'
 
+# cool loading effect before display dealers hidden card
 def display_hidden_card():
     typing_effect('The dealers hidden card was ')
     for _ in range(3):
