@@ -75,12 +75,12 @@ def add_newlines_to_msgs(messages):
     for key in messages:
 
         new_message = ''
-        multiplyer = 1
+        multiplier = 1
         message_list = messages[key].split(' ')
 
         for word in message_list:
             new_message += word + ' '
-            multiple_of_80 = 80 * multiplyer
+            multiple_of_80 = 80 * multiplier
 
             if len(new_message) > multiple_of_80:
 
@@ -88,7 +88,7 @@ def add_newlines_to_msgs(messages):
                     new_message = remove_end_of_line_empty_spaces(new_message)
 
                 new_message += '\n'
-                multiplyer += 1
+                multiplier += 1
 
         messages[key] = new_message
     return messages
