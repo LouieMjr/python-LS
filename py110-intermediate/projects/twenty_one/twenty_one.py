@@ -5,38 +5,37 @@ import sys
 import re
 import json
 
-DECK = {
-    'Hearts': {
-        2: 2, 3: 3, 4: 4,
-        5: 5, 6: 6, 7: 7,
-        8: 8, 9: 9, 10: 10,
-        'Jack': 10, 'Queen': 10,
-        'King': 10, 'Ace': [1, 11]
+game_stats = {
+    'Deck': {
+        'Hearts': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Diamonds': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Clubs': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        },
+        'Spades': {
+            2: 2, 3: 3, 4: 4,
+            5: 5, 6: 6, 7: 7,
+            8: 8, 9: 9, 10: 10,
+            'Jack': 10, 'Queen': 10,
+            'King': 10, 'Ace': [1, 11]
+        }
     },
-    'Diamonds': {
-        2: 2, 3: 3, 4: 4,
-        5: 5, 6: 6, 7: 7,
-        8: 8, 9: 9, 10: 10,
-        'Jack': 10, 'Queen': 10,
-        'King': 10, 'Ace': [1, 11]
-    },
-    'Clubs': {
-        2: 2, 3: 3, 4: 4,
-        5: 5, 6: 6, 7: 7,
-        8: 8, 9: 9, 10: 10,
-        'Jack': 10, 'Queen': 10,
-        'King': 10, 'Ace': [1, 11]
-    },
-     'Spades': {
-        2: 2, 3: 3, 4: 4,
-        5: 5, 6: 6, 7: 7,
-        8: 8, 9: 9, 10: 10,
-        'Jack': 10, 'Queen': 10,
-        'King': 10, 'Ace': [1, 11]
-    },
-}
-
-GAME_STATS = {
     'User': {
         'Score': 0,
         'Cards': [],
@@ -46,14 +45,13 @@ GAME_STATS = {
         'Score': 0,
         'Cards': [],
         'Hidden_card': 0
-    },
+    }
 }
 
-BEGINNING_OF_GAME = True
 END_OF_GAME = 21
 
 with open('./game_messages.json', encoding="utf-8") as file:
-    MESSAGES = json.load(file)
+    game_messages = json.load(file)
 
 def typing_effect(message, time = 0.02):
     for char in message:
@@ -95,56 +93,56 @@ def add_newlines_to_msgs(messages):
         messages[key] = new_message
     return messages
 
-MESSAGES = add_newlines_to_msgs(MESSAGES)
+game_messages = add_newlines_to_msgs(game_messages)
 
 def determine_ace_value(ace_values, player_turn):
     one = ace_values[0]
     eleven = ace_values[1]
 
-    current_score = (GAME_STATS['User']['Score']
-                     if player_turn else GAME_STATS['Dealer']['Score'])
+    current_score = (game_stats['User']['Score']
+                     if player_turn else game_stats['Dealer']['Score'])
 
     return one if current_score + eleven > END_OF_GAME else eleven
 
 def remove_suits_without_cards(suits):
     for suit in suits:
-        if DECK.get(suit) == {}:
+        if game_stats['Deck'].get(suit) == {}:
             suits.remove(suit)
-            del DECK[suit]
+            del game_stats['Deck'][suit]
 
     return suits
 
 def remove_card_from_deck(suit, card_key, card):
 
     if card_key == 'Ace':
-        ace_list = DECK[suit][card_key]
+        ace_list = game_stats['Deck'][suit][card_key]
         ace_list.remove(card)
         if not ace_list:
-            del DECK[suit][card_key]
+            del game_stats['Deck'][suit][card_key]
             return
 
-    del DECK[suit][card_key]
+    del game_stats['Deck'][suit][card_key]
 
 def get_card_value(card_key, suit):
-    card_value = DECK[suit][card_key]
+    card_value = game_stats['Deck'][suit][card_key]
     if card_key == 'Ace':
         card_value = determine_ace_value(card_value,
-                                         GAME_STATS['User']['turn'])
+                                         game_stats['User']['turn'])
     return card_value
 
-def draw_card():
-    deal_amount = 2 if BEGINNING_OF_GAME else 1
+def draw_card(start_of_game):
+    deal_amount = 2 if start_of_game else 1
     cards = []
-    current_turn = 'User' if GAME_STATS['User']['turn'] else 'Dealer'
+    current_turn = 'User' if game_stats['User']['turn'] else 'Dealer'
 
     while deal_amount > 0:
 
-        all_suits = list(DECK.keys())
+        all_suits = list(game_stats['Deck'].keys())
         remaining_suits = remove_suits_without_cards(all_suits)
         suit = choice(remaining_suits)
 
-        card_key = choice(list(DECK[suit].keys()))
-        GAME_STATS[current_turn]['Cards'].append(card_key)
+        card_key = choice(list(game_stats['Deck'][suit].keys()))
+        game_stats[current_turn]['Cards'].append(card_key)
 
         card_value = get_card_value(card_key, suit)
         cards.append(card_value)
@@ -154,33 +152,36 @@ def draw_card():
 
     return cards
 
-def player_hit_or_stay(msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
+def player_hit_or_stay(start_of_game,
+                       msg = 'Player would you like to (Hit/h) or (Stay/s)? ',
                        time = 1):
     sleep(time)
     response = input(msg)
     system('clear')
     if response in ('Hit', 'H', 'hit', 'h'):
-        return draw_card()
+        return draw_card(start_of_game)
     if response in ('Stay', 'S', 'stay', 's'):
         return [0]
 
-    return player_hit_or_stay('Please Enter (hit/h) or (stay/s): ', 0)
+    return player_hit_or_stay(start_of_game,
+                              'Please Enter (hit/h) or (stay/s): ',
+                               0)
 
-def dealer_hit_under_17():
+def dealer_hit_under_17(start_of_game):
     target = 17
-    dealer_score = GAME_STATS['Dealer']['Score']
+    dealer_score = game_stats['Dealer']['Score']
 
     if dealer_score < target:
-        return draw_card()
+        return draw_card(start_of_game)
 
     return [0]
 
 def update_score(user_turn, card_value):
     if user_turn:
-        GAME_STATS['User']['Score'] += sum(card_value)
+        game_stats['User']['Score'] += sum(card_value)
         return
 
-    GAME_STATS['Dealer']['Score'] += sum(card_value)
+    game_stats['Dealer']['Score'] += sum(card_value)
     return
 
 # uses correct word (a or an) before card depending if card starts with vowel
@@ -193,7 +194,7 @@ def starts_with_vowel(card):
 def display_card_message(card_keys, player_turn):
 
     player = 'User' if player_turn else 'Dealer'
-    cards = GAME_STATS[player]['Cards']
+    cards = game_stats[player]['Cards']
 
     drew = f'drew {starts_with_vowel(card_keys[0])}'
 
@@ -201,7 +202,7 @@ def display_card_message(card_keys, player_turn):
 
     for i, card in enumerate(cards):
         if player == 'Dealer' and i == 1:
-            GAME_STATS[player]['Hidden_card'] = card
+            game_stats[player]['Hidden_card'] = card
             card_msg += 'and an unknown card'
             continue
         if player == 'Dealer' and i == 2:
@@ -226,8 +227,8 @@ def check_for_stay(card_value, stays, current_player):
         stays.append(current_player)
 
 def determine_winner():
-    user_score = GAME_STATS['User']['Score']
-    dealer_score = GAME_STATS['Dealer']['Score']
+    user_score = game_stats['User']['Score']
+    dealer_score = game_stats['Dealer']['Score']
 
     if dealer_score > END_OF_GAME and user_score > END_OF_GAME:
         return 'Both of you bust. No winner!'
@@ -249,13 +250,16 @@ def display_hidden_card():
     for _ in range(3):
         typing_effect('...', 0.08)
         sleep(0.2)
-        sys.stdout.write("\033[3D") # Move cursor back 3 positions
-        sys.stdout.write("\033[0K") # Clear from cursor position to end of line
-        sys.stdout.flush() # forces output. For this case it could work without
+        # Move cursor back 3 positions
+        sys.stdout.write("\033[3D")
+        # Clear from cursor position to end of line
+        sys.stdout.write("\033[0K")
+        # forces output. For this case it could work without
+        sys.stdout.flush()
 
 def display_winner(winner):
-    game_info = [[GAME_STATS[player][stat]] for player in GAME_STATS
-                                            for stat in GAME_STATS[player]
+    game_info = [[game_stats[player][stat]] for player in game_stats
+                                            for stat in game_stats[player]
                                             if stat != 'turn']
 
     player_score, _, dealer_score, _, dealer_hidden_card = game_info
@@ -276,49 +280,50 @@ def play_twenty_one():
     msg = "Here we go. We're going to deal you your first two cards!\n\n"
     typing_effect(msg)
 
-    global BEGINNING_OF_GAME
+    beginning_of_game = True
     two_stays = []
     card_values = 0
 
-    while (GAME_STATS['User']['Score'] < END_OF_GAME and
-           GAME_STATS['Dealer']['Score'] < END_OF_GAME):
+    while (game_stats['User']['Score'] < END_OF_GAME and
+           game_stats['Dealer']['Score'] < END_OF_GAME):
 
         if len(two_stays) == 2:
             break
 
-        GAME_STATS['User']['turn'] = True
-        user_turn = GAME_STATS['User']['turn']
+        game_stats['User']['turn'] = True
+        user_turn = game_stats['User']['turn']
 
         if 'User' not in two_stays:
-            if BEGINNING_OF_GAME:
-                card_values = draw_card()
+            if beginning_of_game:
+                card_values = draw_card(beginning_of_game)
             else:
-                card_values = player_hit_or_stay()
+                card_values = player_hit_or_stay(beginning_of_game)
 
             check_for_stay(card_values, two_stays, 'User')
-            card_keys = GAME_STATS['User']['Cards']
+            card_keys = game_stats['User']['Cards']
             display_card_message(card_keys, user_turn)
             update_score(user_turn, card_values)
 
         sleep(1)
 
-        card_keys = GAME_STATS['Dealer']['Cards']
-        GAME_STATS['User']['turn'] = False
-        user_turn = GAME_STATS['User']['turn']
+        card_keys = game_stats['Dealer']['Cards']
+        game_stats['User']['turn'] = False
+        user_turn = game_stats['User']['turn']
 
         if 'Dealer' not in two_stays:
-            card_values = dealer_hit_under_17()
+            card_values = dealer_hit_under_17(beginning_of_game)
             check_for_stay(card_values, two_stays, 'Dealer')
 
             display_card_message(card_keys, user_turn)
             update_score(user_turn, card_values)
-            BEGINNING_OF_GAME = False
+            beginning_of_game = False
 
     results = determine_winner()
     return results
 
 def how_to_play():
-    goal, setup, deck, card_values = (MESSAGES[key] for key in MESSAGES)
+    goal, setup, deck, card_values = (game_messages[key]
+                                      for key in game_messages)
     msg = (f"{goal}\n\n{setup}\n\n{deck}\n\n{card_values}\n\n")
     typing_effect(msg)
     sleep(1)
@@ -337,44 +342,38 @@ def restart_game(msg = 'Do you want to play again?'):
     return restart_game('That input is not valid.')
 
 def reset_game_obj():
-    global BEGINNING_OF_GAME
-    global DECK
-    global GAME_STATS
-
-    BEGINNING_OF_GAME = True
-
-    DECK = {
-        'Hearts': {
-            2: 2, 3: 3, 4: 4,
-            5: 5, 6: 6, 7: 7,
-            8: 8, 9: 9, 10: 10,
-            'Jack': 10, 'Queen': 10,
-            'King': 10, 'Ace': [1, 11]
+    global game_stats
+    game_stats = {
+        'Deck': {
+            'Hearts': {
+                2: 2, 3: 3, 4: 4,
+                5: 5, 6: 6, 7: 7,
+                8: 8, 9: 9, 10: 10,
+                'Jack': 10, 'Queen': 10,
+                'King': 10, 'Ace': [1, 11]
+            },
+            'Diamonds': {
+                2: 2, 3: 3, 4: 4,
+                5: 5, 6: 6, 7: 7,
+                8: 8, 9: 9, 10: 10,
+                'Jack': 10, 'Queen': 10,
+                'King': 10, 'Ace': [1, 11]
+            },
+            'Clubs': {
+                2: 2, 3: 3, 4: 4,
+                5: 5, 6: 6, 7: 7,
+                8: 8, 9: 9, 10: 10,
+                'Jack': 10, 'Queen': 10,
+                'King': 10, 'Ace': [1, 11]
+            },
+            'Spades': {
+                2: 2, 3: 3, 4: 4,
+                5: 5, 6: 6, 7: 7,
+                8: 8, 9: 9, 10: 10,
+                'Jack': 10, 'Queen': 10,
+                'King': 10, 'Ace': [1, 11]
+            }
         },
-        'Diamonds': {
-            2: 2, 3: 3, 4: 4,
-            5: 5, 6: 6, 7: 7,
-            8: 8, 9: 9, 10: 10,
-            'Jack': 10, 'Queen': 10,
-            'King': 10, 'Ace': [1, 11]
-        },
-        'Clubs': {
-            2: 2, 3: 3, 4: 4,
-            5: 5, 6: 6, 7: 7,
-            8: 8, 9: 9, 10: 10,
-            'Jack': 10, 'Queen': 10,
-            'King': 10, 'Ace': [1, 11]
-        },
-        'Spades': {
-            2: 2, 3: 3, 4: 4,
-            5: 5, 6: 6, 7: 7,
-            8: 8, 9: 9, 10: 10,
-            'Jack': 10, 'Queen': 10,
-            'King': 10, 'Ace': [1, 11]
-        },
-    }
-
-    GAME_STATS = {
         'User': {
             'Score': 0,
             'Cards': [],
@@ -384,9 +383,8 @@ def reset_game_obj():
             'Score': 0,
             'Cards': [],
             'Hidden_card': 0
-        },
+        }
     }
-
 
 def start_game():
     game_results = play_twenty_one()
