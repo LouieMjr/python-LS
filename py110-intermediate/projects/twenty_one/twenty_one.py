@@ -259,6 +259,7 @@ def display_hidden_card():
 
 def display_winner(winner):
     game_info = [[game_stats[player][stat]] for player in game_stats
+                                            if player != 'Deck'
                                             for stat in game_stats[player]
                                             if stat != 'turn']
 
@@ -394,7 +395,7 @@ def start_game():
 def initialize_game():
     # if you dont want to wait for rules of the game to display
     # comment out line below
-    how_to_play()
+    # how_to_play()
     start_game()
 
 initialize_game()
