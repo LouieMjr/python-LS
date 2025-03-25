@@ -23,13 +23,13 @@ def rotate_rightmost_digits(number, index):
     return int(first_half + rotated_half)
 
 
-    if index == 1:
-        return number
-    string = str(number)
-    length = len(string)
-
-    add_to_end = string[-index]
-    return int(string[:length - index] + string[-(index-1):] + add_to_end)
+    # if index == 1:
+    #     return number
+    # string = str(number)
+    # length = len(string)
+    #
+    # add_to_end = string[-index]
+    # return int(string[:length - index] + string[-(index-1):] + add_to_end)
 
 
 print(rotate_rightmost_digits(735291, 2) == 735219)  # True
