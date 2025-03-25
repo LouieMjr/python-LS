@@ -28,7 +28,7 @@
 # check if number is an int, if true,
 # iterate while index is less than or equal to length of string - 2
 # Loop steps
-# # pass in number and current index to import function
+# # pass in number and length - current index to import function
 # # this function will take in a number and convert it to a string and will
 # # rotate the numbers based on the current index (count) passed in
 # # assign the results of the function to a variable and repeat Loop steps
@@ -37,6 +37,13 @@
 from rotation_P2 import rotate_rightmost_digits
 
 def max_rotation(number):
+    # number_digits = len(str(number))
+    # for count in range(number_digits, 1, -1):
+    #     print(count)
+    #     number = rotate_rightmost_digits(number, count)
+    #
+    # return number
+
     if not isinstance(number, int):
         return "Not an int"
 
@@ -45,14 +52,11 @@ def max_rotation(number):
     count = 0
 
     while count <= length - 2:
-        rotated_number = rotate_rightmost_digits(int(rotated_number), length -count)
+        rotated_number = rotate_rightmost_digits(rotated_number,
+                                                 length - count)
         count += 1
 
     return rotated_number
-
-
-
-
 
 print(max_rotation(735291) == 321579)          # True
 print(max_rotation(3) == 3)                    # True
@@ -63,4 +67,3 @@ print(max_rotation(8703529146) == 7321609845)  # True
 # zero gets dropped, though, since we're working with
 # an integer.
 print(max_rotation(105) == 15)                 # True
-
