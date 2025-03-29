@@ -59,11 +59,6 @@ def letter_percentages(string):
         else:
             neither += 1
 
-
-    # lowercase_count = (lowercase_count / len(string)) * 100
-    # uppercase_count = (uppercase_count / len(string)) * 100
-    # neither = (neither / len(string)) * 100
-
     string_details['lowercase'] = divide_and_stringify(lowercase_count,
                                                        len(string))
     string_details['uppercase'] = divide_and_stringify(uppercase_count,
