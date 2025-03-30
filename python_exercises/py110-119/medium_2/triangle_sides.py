@@ -41,7 +41,6 @@ def triangle(s1, s2, s3):
     triangle_sides = [s1, s2, s3]
     triangle_sides.sort()
 
-
     s1, s2, s3 = triangle_sides
 
     if s1 > 0 and s1 + s2 > s3:
