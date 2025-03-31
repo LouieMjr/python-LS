@@ -1,10 +1,13 @@
-# Write a function that takes a string and returns a dictionary containing the following three properties:
+# Write a function that takes a string and returns a dictionary containing the
+# following three properties:
 #
 #     the percentage of characters in the string that are lowercase letters
 #     the percentage of characters that are uppercase letters
 #     the percentage of characters that are neither
 #
-# All three percentages should be returned as strings whose numeric values lie between "0.00" and "100.00", respectively. Each value should be rounded to two decimal points.
+# All three percentages should be returned as strings whose numeric values lie
+# between "0.00" and "100.00", respectively. Each value should be rounded to two
+# decimal points.
 #
 # You may assume that the string will always contain at least one character.
 
