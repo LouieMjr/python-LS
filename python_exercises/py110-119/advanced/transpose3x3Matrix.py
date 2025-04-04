@@ -22,27 +22,6 @@ def transpose(matrix):
 
     return transposed
 
-
-    # row = 0
-    # col = 0
-    # count = 1
-    #
-    # transposed = [row[:] for row in matrix]
-    #
-    # while row < len(transposed) - 1:
-    #     x = row
-    #     y = col
-    #
-    #     for _ in range(len(transposed[row]) - count):
-    #         y += 1
-    #         transposed[x][y], transposed[y][x] = transposed[y][x], transposed[x][y]
-    #
-    #     row += 1
-    #     col += 1
-    #     count += 1
-    #
-    # return transposed
-
 matrix = [
     [1, 5, 8],
     [4, 7, 2],
