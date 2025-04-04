@@ -1,3 +1,9 @@
+# Write a function that takes a list of lists that represents a 3x3 matrix and
+# returns the transpose of the matrix. You should implement the function on your
+# own, without using any external libraries.
+#
+# Take care not to modify the original matrix -- your function must produce a
+# new matrix and leave the input matrix list unchanged.
 
 # 0 1, 0 2 --- 1 2
 #  5    8       2
