@@ -31,20 +31,28 @@ return output list
 '''
 
 def smaller_numbers_than_current(lst):
-    count = 0
-    seen = set()
+    unique = set(lst)
     output = []
 
     for number in lst:
-        for num in lst:
-            if num not in seen:
-                seen.add(num)
-                if number > num:
-                    count += 1
-
+        count = sum(1 for num in unique if num < number)
         output.append(count)
-        count = 0
-        seen.clear()
+
+
+    # count = 0
+    # seen = set()
+    # output = []
+
+    # for number in lst:
+    #     for num in lst:
+    #         if num not in seen:
+    #             seen.add(num)
+    #             if number > num:
+    #                 count += 1
+    #
+    #     output.append(count)
+    #     count = 0
+    #     seen.clear()
 
     return output
 
