@@ -30,7 +30,8 @@ return last element of list
 
 def closest_numbers(lst):
     difference = float('inf')
-    differences = []
+    # differences = []
+    closest = None
 
     for i in range(len(lst) - 1):
         for j in range(i + 1, len(lst)):
@@ -38,11 +39,13 @@ def closest_numbers(lst):
 
             if curr_diff < difference:
                 difference = curr_diff
-                differences.append((lst[i], lst[j]))
+                # differences.append((lst[i], lst[j]))
+                closest = (lst[i], lst[j])
 
-    return differences[-1]
+    # return differences[-1]
+    return closest
 
-
+print(closest_numbers([10, 5, 3, 8, 6, 2]))  # should be (5, 6)
 print(closest_numbers([1, 3, 5, 7, 9, 11]))  # should be (1, 3)
 print(closest_numbers([5, 25, 15, 11, 20]) == (15, 11))
 print(closest_numbers([19, 25, 32, 4, 27, 16]) == (25, 27))
