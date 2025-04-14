@@ -1,3 +1,7 @@
+# Create a function that takes a list of integers as an argument. The function
+# should return the minimum sum of 5 consecutive numbers in the list. If the
+# list contains fewer than 5 elements, the function should return None.
+
 '''
 input: list of ints
 output: minimum sum of 5 consecutive numbers in the list OR none if list is less
