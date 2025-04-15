@@ -18,19 +18,20 @@ otherwise return false
 import re
 
 def is_pangram(sentence):
-    clean_text = re.sub(r'[^\w]', '', sentence)
-    print(clean_text)
-    seen = set(clean_text.lower())
-    print(seen)
+
+    return len({char for char in sentence.lower() if char.isalpha()}) == 26
+    # clean_text = re.sub(r'[^\w]', '', sentence)
+    # seen = set(clean_text.lower())
+    # return len(seen) == 26
 
     # seen = set()
     # sentence = sentence.lower()
     #
-    # for char in ''.join(sentence.split()):
-    #     if char not in seen and char.isalpha():
+    # for char in sentence:
+    #     if char.isalpha():
     #         seen.add(char)
     #
-    return True if len(seen) >= 26 else False
+    return len(seen) >= 26
 
 print(is_pangram('The quick, brown fox jumps over the lazy dog!') == True)
 print(is_pangram('The slow, brown fox jumps over the lazy dog!') == False)
