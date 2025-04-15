@@ -1,3 +1,7 @@
+# Create a function that takes a string argument and returns a dict object in
+# which the keys represent the lowercase letters in the string, and the values
+# represent how often the corresponding letter occurs in the string.
+
 '''
 input: string
 output: dict with letters as keys and freq count as values
@@ -17,6 +21,7 @@ return dict
 
 def count_letters(string):
     result = {}
+
     for char in string:
         if char.isalpha() and char.islower():
             result[char] = result.get(char, 0) + 1
