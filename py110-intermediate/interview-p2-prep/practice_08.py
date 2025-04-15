@@ -5,7 +5,6 @@ outputs: count of consecutive vowels/length of longest vowel substring
 
 declare a variable count set to 0
 declare a tmp counter set to 0
-declare a variable toggle set to false
 represent vowels in a tuple
 
 iterate through string
@@ -14,7 +13,6 @@ iterate through string
         increment the tmp counter by 1
 
     if the curr char is not a vowel
-        set toggle to false
         check if tmp counter is greater than count
             if yes, reassign count to tmp counter
             set tmp counter to 0
@@ -26,7 +24,6 @@ return count
 def longest_vowel_substring(string):
     vowel_count = 0
     tmp_count = 0
-    toggle = False
 
     for char in string:
         if char in ('aeiou'):
