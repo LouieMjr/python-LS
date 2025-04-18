@@ -4,34 +4,35 @@ outputs: boolean
 
 string has to contain every letter of the alphabet at least once to be considered a pangram
 
+rules:
+ignore numbers and punctuation
 case insensitive
 
-declare an empty set
-iterate through lowercase version of string without puncuation
-    check if set contains char and char is a letter
-    if not, add char to set
+Algo:
 
-if length of set is 26 return true
-otherwise return false
+declare a variable named alphabet, set to a list of each letter as an element in the alphabet
+
+iterate through the lowercase input string
+    check if curr char is a letter
+    AND check if current character exists in the alphabet list
+        if true, remove current character from the alphabet list
+
+
+return results of if length of the list is equal to 0
 
 '''
-import re
 
-def is_pangram(sentence):
+def is_pangram(string):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    alphabet = list(alphabet)
 
-    return len({char for char in sentence.lower() if char.isalpha()}) == 26
-    # clean_text = re.sub(r'[^\w]', '', sentence)
-    # seen = set(clean_text.lower())
-    # return len(seen) == 26
+    for char in string.lower():
+        if char.isalpha() and char in alphabet:
+            alphabet.remove(char)
 
-    # seen = set()
-    # sentence = sentence.lower()
-    #
-    # for char in sentence:
-    #     if char.isalpha():
-    #         seen.add(char)
-    #
-    return len(seen) >= 26
+    return len(alphabet) == 0
+
+    # return len({char for char in sentence.lower() if char.isalpha()}) == 26
 
 print(is_pangram('The quick, brown fox jumps over the lazy dog!') == True)
 print(is_pangram('The slow, brown fox jumps over the lazy dog!') == False)
