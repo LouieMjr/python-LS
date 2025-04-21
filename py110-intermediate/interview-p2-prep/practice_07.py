@@ -1,3 +1,14 @@
+# Create a function that takes a list of integers as an argument and returns the
+# number of identical pairs of integers in that list. For instance, the number
+# of identical pairs in [1, 2, 3, 2, 1] is 2: occurrences each of both 2 and 1.
+#
+# If the list is empty or contains exactly one value, return 0.
+#
+# If a certain number occurs more than twice, count each complete pair once. For
+# instance, for [1, 1, 1, 1] and [2, 2, 2, 2, 2], the function should return 2.
+# The first list contains two complete pairs while the second has an extra 2
+# that isn't part of the other two pairs.
+
 '''
 input: list of numbers
 output: number counting how many pairs exist in input
