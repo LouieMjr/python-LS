@@ -203,13 +203,3 @@ friend = Person('Lynn', 'Blake')
 print(friend.name)             # Lynn Blake
 # friend.name = ('Lynn', 'Blake-John')
 # ValueError: Name must be alphabetic.
-
-
-
-
-
-
-
-
-
-
