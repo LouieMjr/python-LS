@@ -75,7 +75,7 @@ class Candidate:
 
 
 
-class Election(Candidate):
+class Election:
 
     def __init__(self, candidates):
         self.candidates = candidates
