@@ -48,23 +48,25 @@
 
 
 
-
-
-class Car:
+class Vehicle:
     count = 0
 
     def __init__(self):
-        Car.count += 1
+        Vehicle.count += 1
 
     @classmethod
     def vehicles(cls):
         return cls.count
 
-class Truck(Car):
+class Car(Vehicle):
     def __init__(self):
         super().__init__()
 
-class Boat(Car):
+class Truck(Vehicle):
+    def __init__(self):
+        super().__init__()
+
+class Boat(Vehicle):
     def __init__(self):
         super().__init__()
 
