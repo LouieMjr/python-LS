@@ -46,7 +46,15 @@
 #                     # No! I am riding!
 
 
+class TurnSignalMixin:
+    def signal_left(self):
+        print('Signalling left')
 
+    def signal_right(self):
+        print('Signalling right')
+
+    def signal_off(self):
+        print('Signal is now off')
 
 class Vehicle:
     count = 0
@@ -56,19 +64,21 @@ class Vehicle:
 
     @classmethod
     def vehicles(cls):
-        return cls.count
+        return cls.count # could do Vehichle.count
 
-class Car(Vehicle):
+class Car(Vehicle, TurnSignalMixin):
     def __init__(self):
         super().__init__()
 
-class Truck(Vehicle):
+class Truck(Vehicle, TurnSignalMixin):
     def __init__(self):
         super().__init__()
 
 class Boat(Vehicle):
     def __init__(self):
         super().__init__()
+
+
 
 print(Car.vehicles())     # 0
 car1 = Car()
@@ -83,3 +93,16 @@ print(Truck.vehicles())   # 6
 boat1 = Boat()
 boat2 = Boat()
 print(Boat.vehicles())    # 8
+
+car1.signal_left()       # Signalling left
+truck1.signal_right()    # Signalling right
+car1.signal_off()        # Signal is now off
+truck1.signal_off()      # Signal is now off
+# boat1.signal_left()
+# AttributeError: 'Boat' object has no attribute
+# 'signal_left'
+
+print(Car.mro())
+print(Truck.mro())
+print(Boat.mro())
+print(Vehicle.mro())
