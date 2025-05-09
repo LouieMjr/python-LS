@@ -1,3 +1,8 @@
+# Create a function that takes a non-empty string as an argument. The string
+# consists entirely of lowercase alphabetic characters. The function should
+# return the length of the longest vowel substring. The vowels of interest are
+# "a", "e", "i", "o", and "u".
+
 '''
 inputs: non empty string
 outputs: count of consecutive vowels/length of longest vowel substring

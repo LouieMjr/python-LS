@@ -35,8 +35,6 @@ def unscramble(string1, string2):
             occurences[char] -= 1
 
     return all(count <= 0 for count in occurences.values())
-    return not any(occurences.values())
-
 
 print(unscramble('ansucchlohlo', 'launchschool') == True)
 print(unscramble('phyarunstole', 'pythonrules') == True)
