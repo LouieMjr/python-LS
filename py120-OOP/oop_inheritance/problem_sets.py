@@ -90,3 +90,5 @@ except Exception as exception:
     print(exception.__class__.__name__, exception, "\n")
     # AttributeError 'Cat' object has no attribute 'fetch'
 
+print(Bulldog.mro())
+print([cls.__name__ for cls in Bulldog.mro()])
