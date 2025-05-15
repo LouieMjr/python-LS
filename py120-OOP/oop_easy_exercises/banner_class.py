@@ -26,13 +26,14 @@ class Banner:
             return f"| {self.message} |"
 
         fit_msg = ''
-        leftover_msg = self.message
-        num = len(self.message) // self.width + 1
         msg_len = self.msg_len
+        leftover_msg = self.message
+        # num = len(self.message) // self.width + 1
 
         chunks = ''
         chunk = ''
         word_list = leftover_msg.split()
+
         for word in word_list:
             if len(chunk + word) >= msg_len:
                 chunks += chunk
